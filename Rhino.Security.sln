@@ -1,9 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhino.Security-vs2008", "Rhino.Security\Rhino.Security-vs2008.csproj", "{DBA372FE-3D52-45B3-AF82-B37696328764}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhino.Security", "Rhino.Security\Rhino.Security.csproj", "{DBA372FE-3D52-45B3-AF82-B37696328764}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhino.Security.Tests-vs2008", "Rhino.Security.Tests\Rhino.Security.Tests-vs2008.csproj", "{558B3AE3-C408-4DB0-AC79-386BC12379BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhino.Security.Tests", "Rhino.Security.Tests\Rhino.Security.Tests.csproj", "{558B3AE3-C408-4DB0-AC79-386BC12379BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhino.Security.ActiveRecord", "Rhino.Security.ActiveRecord\Rhino.Security.ActiveRecord.csproj", "{5FCDDA8A-B305-474E-AD27-4DEF6CB042B6}"
 EndProject

@@ -201,8 +201,7 @@ namespace Rhino.Security.Tests
         [Fact]
         public void CannotRenameUsersGroupThatDoesNotExist()
         {
-            Assert.Throws<InvalidOperationException>("There is no users group named: NonExistingGroup",
-                                                     () =>
+            Assert.Throws<InvalidOperationException>(() =>
                                                      authorizationRepository.RenameUsersGroup("NonExistingGroup",
                                                                                               "Administrators"));
         }
@@ -210,8 +209,7 @@ namespace Rhino.Security.Tests
         [Fact]
         public void CannotRenameEntitiesGroupThatDoesNotExist()
         {
-            Assert.Throws<InvalidOperationException>( "There is no entities group named: NonExistingGroup",
-                                                     () =>
+            Assert.Throws<InvalidOperationException>(() =>
                                                      authorizationRepository.RenameEntitiesGroup("NonExistingGroup",
                                                                                                  "Accounts"));
         }
@@ -613,9 +611,7 @@ namespace Rhino.Security.Tests
         {
             authorizationRepository.CreateChildUserGroupOf("Administrators", "DBA");
 
-            Assert.Throws<InvalidOperationException>(
-                 "Cannot remove users group 'Administrators' because is has child groups. Remove those groups and try again.",
-                 () => authorizationRepository.RemoveUsersGroup("Administrators"));
+            Assert.Throws<InvalidOperationException>(() => authorizationRepository.RemoveUsersGroup("Administrators"));
         }
 
         [Fact]
@@ -623,9 +619,7 @@ namespace Rhino.Security.Tests
         {
             authorizationRepository.CreateChildEntityGroupOf("Important Accounts", "Regular Accounts");
 
-            Assert.Throws<InvalidOperationException>(
-                 "Cannot remove entity group 'Important Accounts' because is has child groups. Remove those groups and try again.",
-                 () => authorizationRepository.RemoveEntitiesGroup("Important Accounts"));
+            Assert.Throws<InvalidOperationException>(() => authorizationRepository.RemoveEntitiesGroup("Important Accounts"));
         }
 
 
@@ -770,8 +764,7 @@ namespace Rhino.Security.Tests
         [Fact]
         public void CannotRemoveParentOperatio()
         {
-            Assert.Throws<InvalidOperationException>("Cannot remove operation '/Account' because it has child operations. Remove those operations and try again.",
-                () => authorizationRepository.RemoveOperation("/Account"));
+            Assert.Throws<InvalidOperationException>(() => authorizationRepository.RemoveOperation("/Account"));
         }
 
         [Fact]
