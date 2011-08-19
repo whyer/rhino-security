@@ -581,6 +581,7 @@ namespace Rhino.Security.Services
                 .Add(Restrictions.Eq("Name", typeof (TEntity).FullName))
                 .SetCacheable(true)
                 .UniqueResult<EntityType>();
+
 			if (entityType == null)
 			{
 				entityType = new EntityType {Name = typeof (TEntity).FullName};
