@@ -158,7 +158,9 @@
     <EmbeddedResource Include="Model\EntitiesGroup.hbm.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Model\EntityReference.hbm.xml" />
+    <EmbeddedResource Include="Model\EntityReference.hbm.xml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Model\EntityType.hbm.xml" />
