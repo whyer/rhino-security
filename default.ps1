@@ -10,6 +10,9 @@ properties {
   $release_dir = "$base_dir\Release"
   $uploadCategory = "Rhino-Security"
   $uploader = "..\Uploader\S3Uploader.exe"
+  $NuGetPackageName = "SpecsFor" #http://trycatchfail.com/blog/post/Building-And-Publishing-NuGet-Packages-With-psake.aspx
+  $NuGetPackDir = "$OutputDir" + "Pack"
+  $NuSpecFileName = "SpecsFor.nuspec"
 } 
 
 include .\psake_ext.ps1
@@ -61,7 +64,6 @@ task Compile -depends Init {
   if ($lastExitCode -ne 0) {
         throw "Error: Failed to execute msbuild"
   }
-
 } 
 
 task Test -depends Compile {
@@ -82,6 +84,24 @@ task Release -depends Test {
 	if ($lastExitCode -ne 0) {
         throw "Error: Failed to execute ZIP command"
     }
+}
+
+task Pack -depends Build {
+
+    mkdir $NuGetPackDir
+    cp "$NuSpecFileName" "$NuGetPackDir"
+
+    mkdir "$NuGetPackDir\lib"
+    cp "$SpecsForOutput\SpecsFor.dll" "$NuGetPackDir\lib"
+
+    cp "$BaseDir\Templates" "$NuGetPackDir" -Recurse
+    Remove-Item -Force "$NuGetPackDir\Templates\.gitignore"
+    
+    $Spec = [xml](get-content "$NuGetPackDir\$NuSpecFileName")
+    $Spec.package.metadata.version = ([string]$Spec.package.metadata.version).Replace("{Version}",$Version)
+    $Spec.Save("$NuGetPackDir\$NuSpecFileName")
+
+    exec { nuget pack "$NuGetPackDir\$NuSpecFileName" }
 }
 
 task Upload -depends Release {
