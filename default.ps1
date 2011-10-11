@@ -13,14 +13,14 @@ properties {
 } 
 
 include .\psake_ext.ps1
-include .\SharedLibs\build-ext\x64detection.ps1
+# include .\SharedLibs\build-ext\x64detection.ps1
 	
 task default -depends Release
 
 task Clean { 
   remove-item -force -recurse $buildartifacts_dir -ErrorAction SilentlyContinue 
   remove-item -force -recurse $release_dir -ErrorAction SilentlyContinue 
-  Build-SharedLibs-For-Processor 
+  # Build-SharedLibs-For-Processor 
 } 
 
 task Init -depends Clean { 
@@ -67,7 +67,7 @@ task Compile -depends Init {
 task Test -depends Compile {
   $old = pwd
   cd $build_dir
-  exec "$tools_dir\xunit\xunit.console.exe" "$build_dir\Rhino.Security.Tests.dll"
+  exec "$tools_dir\xunit\xunit.console.x86.exe" "$build_dir\Rhino.Security.Tests.dll"
   cd $old		
 }
 
