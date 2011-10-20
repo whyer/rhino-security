@@ -94,7 +94,7 @@ task Test -depends Compile {
   cd $old		
 }
 
-task Release -depends Test {
+task Release -depends Test, Pack, Push {
 	& $tools_dir\zip.exe -9 -A -j `
 		$release_dir\Rhino.Security-$humanReadableversion-Build-$env:ccnetnumericlabel.zip `
 		$build_dir\Rhino.Security.dll `
@@ -146,7 +146,7 @@ task PackWindsor {
     & ".\$(Join-Path 'tools' 'nuget.exe')" pack $s
 }
 
-task Pack -depends Release, PreparePack, PackCore, PackWindsor {
+task Pack -depends Compile, PreparePack, PackCore, PackWindsor {
 	mkdir $NuGets
 	rm (Join-Path $NuGets "*.nupkg")
 	mv "*.nupkg" $NuGets
@@ -159,8 +159,6 @@ task Push {
 		& ".\$(Join-Path 'tools' 'nuget.exe')" push "$p" -Source "http://teamcity:8080/" 
 	}
 }
-
-task Release -depends Pack, Push
 
 task Upload -depends Release {
 	Write-Host "Starting upload"
