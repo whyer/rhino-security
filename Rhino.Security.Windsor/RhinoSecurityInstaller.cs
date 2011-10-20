@@ -1,6 +1,8 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using CommonServiceLocator.WindsorAdapter;
+using Microsoft.Practices.ServiceLocation;
 using Rhino.Security.Interfaces;
 using Rhino.Security.Services;
 
@@ -27,6 +29,9 @@ namespace Rhino.Security.Windsor
 					.ImplementedBy<PermissionsService>()
 					.LifeStyle.Transient
 				);
+
+			if (ServiceLocator.Current != null)
+				ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
 		}
 	}
 }

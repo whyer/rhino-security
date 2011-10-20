@@ -10,16 +10,26 @@ properties {
   $release_dir = "$base_dir\Release"
   $uploadCategory = "Rhino-Security"
   $uploader = "..\Uploader\S3Uploader.exe"
-  $NuGetPackageName = "SpecsFor" #http://trycatchfail.com/blog/post/Building-And-Publishing-NuGet-Packages-With-psake.aspx
-  $NuGetPackDir = "$build_dir" + "\nugets"
+  
+  # core package
+  $NuGetPackageName = "Rhino.Security" #http://trycatchfail.com/blog/post/Building-And-Publishing-NuGet-Packages-With-psake.aspx
+  $NuGetPackDir = Join-Path "$build_dir" "nuspecs"
   $NuSpecFileName = "Rhino.Security.nuspec"
+  $NuGets = Join-Path $build_dir "nugets"
+  
+  # windsor package
+  $NuGetPackageNameWindsor = "Rhino.Security.Windsor"
+  $NuSpecFileNameWindsor = "$NuGetPackageNameWindsor.nuspec"
   $NuSpecFileNameWindsor = "Rhino.Security.Windsor.nuspec"
+  
+  $NugetCoreOut = Join-Path $NuGetPackDir $NuGetPackageName
+  $NugetWindOut = Join-Path $NuGetPackDir $NuGetPackageNameWindsor
 } 
 
 include .\psake_ext.ps1
 # include .\SharedLibs\build-ext\x64detection.ps1
 	
-task default -depends Release
+task default -depends Pack
 
 task Clean { 
   remove-item -force -recurse $buildartifacts_dir -ErrorAction SilentlyContinue 
@@ -97,23 +107,60 @@ task Release -depends Test {
     }
 }
 
-task Pack -depends Build {
-
+task PreparePack {
     mkdir $NuGetPackDir
-    cp "$NuSpecFileName" "$NuGetPackDir"
-
-    mkdir "$NuGetPackDir\lib"
-    cp "$SpecsForOutput\SpecsFor.dll" "$NuGetPackDir\lib"
-
-    cp "$BaseDir\Templates" "$NuGetPackDir" -Recurse
-    Remove-Item -Force "$NuGetPackDir\Templates\.gitignore"
-    
-    $Spec = [xml](get-content "$NuGetPackDir\$NuSpecFileName")
-    $Spec.package.metadata.version = ([string]$Spec.package.metadata.version).Replace("{Version}",$Version)
-    $Spec.Save("$NuGetPackDir\$NuSpecFileName")
-
-    exec { nuget pack "$NuGetPackDir\$NuSpecFileName" }
+	mkdir $NugetCoreOut
+	mkdir $NugetWindOut
+    cp $NuSpecFileName $NugetCoreOut
+    cp $NuSpecFileNameWindsor $NugetWindOut
+    mkdir "$NugetCoreOut\lib"
+    mkdir "$NugetCoreOut\lib\net35"
+    mkdir "$NugetWindOut\lib"
+    mkdir "$NugetWindOut\lib\net35"
 }
+
+task PackCore {
+	$s = Join-Path $NugetCoreOut $NuSpecFileName
+
+    cp "$build_dir\Rhino.Security.dll" "$NugetCoreOut\lib\net35"
+    cp "$build_dir\Rhino.Security.xml" "$NugetCoreOut\lib\net35"
+    
+    $Spec = [xml](get-content $s)
+    $Spec.package.metadata.version = ([string]$Spec.package.metadata.version).Replace("{Version}",$Version)
+    $Spec.Save($s)
+
+    & ".\$(Join-Path 'tools' 'nuget.exe')" pack $s
+}
+
+task PackWindsor {
+	$s = Join-Path $NugetWindOut $NuSpecFileNameWindsor
+
+    cp "$build_dir\Rhino.Security.Windsor.dll" "$NugetWindOut\lib\net35"
+    cp "$build_dir\Rhino.Security.Windsor.xml" "$NugetWindOut\lib\net35"
+	
+	$Spec = [xml](get-content $s)
+	$Spec.package.metadata.version = ([string]$Spec.package.metadata.version).Replace("{Version}",$Version)
+    $Spec.package.metadata.dependencies.dependency[1].version = ([string]$Spec.package.metadata.dependencies.dependency[1].version).Replace("{Version}",$Version)
+    $Spec.Save($s)
+
+    & ".\$(Join-Path 'tools' 'nuget.exe')" pack $s
+}
+
+task Pack -depends Release, PreparePack, PackCore, PackWindsor {
+	mkdir $NuGets
+	rm (Join-Path $NuGets "*.nupkg")
+	mv "*.nupkg" $NuGets
+}
+
+task Push {
+	ls $NuGets | % { 
+		$p = join-path $NuGets $_
+		echo "Pushing from $p"
+		& ".\$(Join-Path 'tools' 'nuget.exe')" push "$p" -Source "http://teamcity:8080/" 
+	}
+}
+
+task Release -depends Pack, Push
 
 task Upload -depends Release {
 	Write-Host "Starting upload"
