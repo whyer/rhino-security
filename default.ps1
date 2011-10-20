@@ -4,15 +4,16 @@ properties {
   $build_dir = "$base_dir\build" 
   $buildartifacts_dir = "$build_dir\" 
   $sln_file = "$base_dir\Rhino.Security.sln" 
-  $version = "1.3.2.0"
+  $version = "1.3.3.0"
   $humanReadableversion = "1.3"
   $tools_dir = "$base_dir\Tools"
   $release_dir = "$base_dir\Release"
   $uploadCategory = "Rhino-Security"
   $uploader = "..\Uploader\S3Uploader.exe"
   $NuGetPackageName = "SpecsFor" #http://trycatchfail.com/blog/post/Building-And-Publishing-NuGet-Packages-With-psake.aspx
-  $NuGetPackDir = "$OutputDir" + "Pack"
-  $NuSpecFileName = "SpecsFor.nuspec"
+  $NuGetPackDir = "$build_dir" + "\nugets"
+  $NuSpecFileName = "Rhino.Security.nuspec"
+  $NuSpecFileNameWindsor = "Rhino.Security.Windsor.nuspec"
 } 
 
 include .\psake_ext.ps1
@@ -34,7 +35,7 @@ task Init -depends Clean {
 		-company "Hibernating Rhinos" `
 		-product "Rhino Security $version" `
 		-version $version `
-		-copyright "Hibernating Rhinos & Ayende Rahien 2004 - 2009"
+		-copyright "Hibernating Rhinos & Ayende Rahien 2004 - 2009 & Contributors 2010-2011"
 		
 	Generate-Assembly-Info `
 		-file "$base_dir\Rhino.Security.Tests\Properties\AssemblyInfo.cs" `
@@ -45,6 +46,16 @@ task Init -depends Clean {
 		-version $version `
 		-clsCompliant "false" `
 		-copyright "Hibernating Rhinos & Ayende Rahien 2004 - 2009"
+		
+	Generate-Assembly-Info `
+		-file "$base_dir\Rhino.Security.Windsor\Properties\AssemblyInfo.cs" `
+		-title "Rhino Security Windsor $version" `
+		-description "Windsor Integation with Rhino Security" `
+		-company "Hibernating Rhinos" `
+		-product "Rhino Security Windsor $version" `
+		-version $version `
+		-clsCompliant "false" `
+		-copyright "Interfleet Technology AB 2011"
 		
 	Generate-Assembly-Info `
 		-file "$base_dir\Rhino.Security.ActiveRecord\Properties\AssemblyInfo.cs" `
