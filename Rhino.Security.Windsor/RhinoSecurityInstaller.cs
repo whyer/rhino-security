@@ -30,8 +30,7 @@ namespace Rhino.Security.Windsor
 					.LifeStyle.Transient
 				);
 
-			if (ServiceLocator.Current == null)
-				ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
+			ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
 		}
 	}
 }
