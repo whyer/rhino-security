@@ -40,7 +40,7 @@ namespace Rhino.Security.Services
 		public Permission[] GetPermissionsFor(IUser user)
 		{
 			DetachedCriteria criteria = DetachedCriteria.For<Permission>()
-				.Add(Expression.Eq("User", user)
+				.Add(Expression.Eq("User.Id", user.SecurityInfo.Identifier)
 				     || Subqueries.PropertyIn("UsersGroup.Id",
 				                              SecurityCriterions.AllGroups(user).SetProjection(Projections.Id())));
 
@@ -71,17 +71,17 @@ namespace Rhino.Security.Services
                 throw new ArgumentNullException("operationNames");
 
             string[] allOperationNames = Strings.GetHierarchicalOperationNames(operationNames);
-            DetachedCriteria criteria = DetachedCriteria.For<Permission>()
-                .Add(Expression.Eq("User", user)
-                     || Subqueries.PropertyIn("UsersGroup.Id",
-                                              SecurityCriterions.AllGroups(user).SetProjection(Projections.Id())))
+			DetachedCriteria criteria = DetachedCriteria.For<Permission>()
+				.Add(Expression.Eq("User.Id", user.SecurityInfo.Identifier)
+				     || Subqueries.PropertyIn("UsersGroup.Id",
+				                              SecurityCriterions.AllGroups(user).SetProjection(Projections.Id())))
                 .Add(Expression.IsNull("EntitiesGroup"))
                 .Add(Expression.IsNull("EntitySecurityKey"))
                 .CreateAlias("Operation", "op")
                 .Add(Expression.In("op.Name", allOperationNames));
 
-            return FindResults(criteria);
-        }
+			return FindResults(criteria);
+		}
 
         /// <summary>
         /// Gets all permissions for the specified operation
@@ -124,7 +124,7 @@ namespace Rhino.Security.Services
 			EntitiesGroup[] entitiesGroups = authorizationRepository.GetAssociatedEntitiesGroupsFor(entity);
 
 			DetachedCriteria criteria = DetachedCriteria.For<Permission>()
-				.Add(Expression.Eq("User", user)
+				.Add(Expression.Eq("User.Id", user.SecurityInfo.Identifier)
 				     || Subqueries.PropertyIn("UsersGroup.Id",
 				                              SecurityCriterions.AllGroups(user).SetProjection(Projections.Id())))
 				.Add(Expression.Eq("EntitySecurityKey", key) || Expression.In("EntitiesGroup", entitiesGroups));
@@ -155,23 +155,23 @@ namespace Rhino.Security.Services
         /// <returns></returns>
         public Permission[] GetPermissionsFor<TEntity>(IUser user, TEntity entity, string[] operationNames) where TEntity : class
         {
-            Guid key = Security.ExtractKey(entity);
+			Guid key = Security.ExtractKey(entity);
             string[] allOperationNames = Strings.GetHierarchicalOperationNames(operationNames);
-            EntitiesGroup[] entitiesGroups = authorizationRepository.GetAssociatedEntitiesGroupsFor(entity);		
+			EntitiesGroup[] entitiesGroups = authorizationRepository.GetAssociatedEntitiesGroupsFor(entity);
 
-            AbstractCriterion onCriteria =
-                (Restrictions.Eq("EntitySecurityKey", key) || Restrictions.In("EntitiesGroup", entitiesGroups)) ||
-                (Restrictions.IsNull("EntitiesGroup") && Restrictions.IsNull("EntitySecurityKey"));
-            DetachedCriteria criteria = DetachedCriteria.For<Permission>()
-                .Add(Restrictions.Eq("User", user)
-                     || Subqueries.PropertyIn("UsersGroup.Id",
-                                              SecurityCriterions.AllGroups(user).SetProjection(Projections.Id())))
-                .Add(onCriteria)
-                .CreateAlias("Operation", "op")
+			AbstractCriterion onCriteria =
+				(Restrictions.Eq("EntitySecurityKey", key) || Restrictions.In("EntitiesGroup", entitiesGroups)) ||
+				(Restrictions.IsNull("EntitiesGroup") && Restrictions.IsNull("EntitySecurityKey"));
+			DetachedCriteria criteria = DetachedCriteria.For<Permission>()
+				.Add(Restrictions.Eq("User.Id", user.SecurityInfo.Identifier)
+				     || Subqueries.PropertyIn("UsersGroup.Id",
+				                              SecurityCriterions.AllGroups(user).SetProjection(Projections.Id())))
+				.Add(onCriteria)
+				.CreateAlias("Operation", "op")
                 .Add(Restrictions.In("op.Name", allOperationNames));
 
-            return FindResults(criteria);
-        }
+			return FindResults(criteria);
+		}
 
 		/// <summary>
 		/// Gets the permissions for the specified entity
