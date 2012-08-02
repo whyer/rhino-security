@@ -51,7 +51,7 @@ namespace Rhino.Security.Impl.Util
         /// </remarks>
         public static string[] GetHierarchicalOperationNames(string[] operationNames)
         {
-            return operationNames.SelectMany(GetHierarchicalOperationNames).Distinct().ToArray();
+            return operationNames.SelectMany<string,string>(GetHierarchicalOperationNames).Distinct().ToArray();
         }
 
 		/// <summary>
