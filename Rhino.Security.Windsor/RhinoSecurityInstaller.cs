@@ -29,8 +29,6 @@ namespace Rhino.Security.Windsor
 					.ImplementedBy<PermissionsService>()
 					.LifeStyle.Transient
 				);
-
-			ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
 		}
 	}
 }
