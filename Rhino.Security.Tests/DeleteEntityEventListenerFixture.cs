@@ -1,28 +1,17 @@
-﻿namespace Rhino.Security.Tests
+﻿using NHibernate.Criterion;
+using Rhino.Security.Model;
+using System;
+using System.IO;
+using Xunit;
+
+namespace Rhino.Security.Tests
 {
-	using System;
-	using NHibernate.Criterion;
-	using Rhino.Security.Model;
-	using Xunit;
-
-	public class DeleteEntityEventListenerFixture : DatabaseFixture
+    public class DeleteEntityEventListenerFixture : DatabaseFixture
 	{
-		protected override void BeforeSetup()
-		{
-			//XmlConfigurator.Configure();
-		}
-
-		public override void Dispose()
-		{
-			base.Dispose();
-			//LogManager.Shutdown();
-		}
-
-		//public override string ConnectionString
-		//{
-		//    get { return "Data Source=.;Initial Catalog=RhinoSec_test;Integrated Security=SSPI;"; }
-		//}
-
+        public DeleteEntityEventListenerFixture() : base(false)
+        {
+        }
+        
 		[Fact]
 		public void DoesDeletingEntityRemoveEntityReferences()
 		{
