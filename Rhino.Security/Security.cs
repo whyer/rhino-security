@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 using NHibernate.Cfg;
 using NHibernate.Event;
 using Rhino.Security.Impl;
