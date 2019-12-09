@@ -1,11 +1,10 @@
 properties { 
   $base_dir  = resolve-path .
-  $lib_dir = "$base_dir\SharedLibs"
   $build_dir = "$base_dir\build" 
   $buildartifacts_dir = "$build_dir\" 
   $sln_file = "$base_dir\Rhino.Security.sln" 
-  $version = "1.3.7.0"
-  $humanReadableversion = "1.3"
+  $version = "2.0.0.0"
+  $humanReadableversion = "2.+"
   $tools_dir = "$base_dir\Tools"
   $release_dir = "$base_dir\Release"
   $uploadCategory = "Rhino-Security"
@@ -24,7 +23,6 @@ properties {
 } 
 
 include .\psake_ext.ps1
-# include .\SharedLibs\build-ext\x64detection.ps1
 	
 task default -depends Pack
 
@@ -78,7 +76,8 @@ task Init -depends Clean {
 } 
 
 task Compile -depends Init { 
-  & msbuild "$sln_file" "/p:OutDir=$build_dir\\" /p:Configuration=Release
+  # & msbuild "$sln_file" "/p:OutDir=$build_dir\\" /p:Configuration=Release
+  & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" "$sln_file" "/p:OutDir=$build_dir\\" /p:Configuration=Release
   if ($lastExitCode -ne 0) {
         throw "Error: Failed to execute msbuild"
   }
