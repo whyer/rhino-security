@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 using Rhino.Security.Interfaces;
 using Xunit;
 using Rhino.Security.Model;

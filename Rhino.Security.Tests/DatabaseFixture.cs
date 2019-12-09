@@ -1,6 +1,6 @@
 using System;
 using System.Data.SQLite;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 using NHibernate;
 using NHibernate.Cache;
 using NHibernate.Cfg;
