@@ -52,7 +52,7 @@ namespace Rhino.Security.Tests
                 .SetProperty(Environment.ConnectionDriver, driverName)
                 .SetProperty(Environment.Dialect, dialectName)
                 .SetProperty(Environment.ConnectionString, ConnectionString)
-				.SetProperty(Environment.ReleaseConnections, "on_close")
+                .SetProperty(Environment.ReleaseConnections, "auto")
                 .SetProperty(Environment.UseSecondLevelCache, "true")
                 .SetProperty(Environment.UseQueryCache, "true")
                 .SetProperty(Environment.CacheProvider, typeof(HashtableCacheProvider).AssemblyQualifiedName)
