@@ -20,7 +20,6 @@ namespace Rhino.Security.Tests
             permissionService = ServiceLocator.Current.GetInstance<IPermissionsService>();
             permissionsBuilderService = ServiceLocator.Current.GetInstance<IPermissionsBuilderService>();
             authorizationRepository = ServiceLocator.Current.GetInstance<IAuthorizationRepository>();
-            session.BeginTransaction();
 
             User ayende = new User { Name = "ayende" };
             session.Save(ayende);
@@ -47,7 +46,6 @@ namespace Rhino.Security.Tests
             session.Flush();
             session.Evict(group);
 
-            session.Transaction.Commit();
         }
 
         [Fact]
