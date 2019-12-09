@@ -70,6 +70,7 @@ namespace Rhino.Security.Tests
             {
                 using (var command = s2.Connection.CreateCommand())
                 {
+                    s2.Transaction.Enlist(command);
                     command.CommandText = "DELETE FROM security_Permissions";
                     command.ExecuteNonQuery();
                 }

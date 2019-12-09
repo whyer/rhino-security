@@ -74,7 +74,7 @@ namespace Rhino.Security.Tests
 					authorizationRepository.CreateEntitiesGroup("Admininstrators");
 					session.Flush();
 				}).InnerException;
-			Assert.Contains("unique", exception.Message);
+			Assert.Contains("unique", exception.Message, StringComparison.InvariantCultureIgnoreCase);
 		}
 
 		[Fact]
@@ -89,7 +89,7 @@ namespace Rhino.Security.Tests
 					session.Flush();
 				}).InnerException;
 
-			Assert.Contains("unique", exception.Message);
+			Assert.Contains("unique", exception.Message, StringComparison.InvariantCultureIgnoreCase);
 		}
 
 		[Fact]
@@ -154,7 +154,7 @@ namespace Rhino.Security.Tests
 						authorizationRepository.RenameUsersGroup("Admininstrators", "ExistingGroup");
 						session.Flush();
 					}).InnerException;
-			Assert.Contains("unique", exception.Message);
+			Assert.Contains("unique", exception.Message, StringComparison.InvariantCultureIgnoreCase);
 		}
 
 		[Fact]
@@ -194,7 +194,7 @@ namespace Rhino.Security.Tests
 						session.Flush();
 					}).InnerException;
 
-			Assert.Contains("unique", exception.Message);
+			Assert.Contains("unique", exception.Message, StringComparison.InvariantCultureIgnoreCase);
 		}
 
 		[Fact]
