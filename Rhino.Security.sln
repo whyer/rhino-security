@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29509.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rhino.Security.Tests", "Rhino.Security.Tests\Rhino.Security.Tests.csproj", "{558B3AE3-C408-4DB0-AC79-386BC12379BE}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rhino.Security", "Rhino.Security\Rhino.Security.csproj", "{2FFCEF0E-CEAD-4187-BBCD-CB0F60CF09AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rhino.Security.Tests", "Rhino.Security.Tests\Rhino.Security.Tests.csproj", "{5D21ED8E-81F9-48FE-BA9A-183CE9015EEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,18 +14,18 @@ Global
 		Start|Any CPU = Start|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{558B3AE3-C408-4DB0-AC79-386BC12379BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{558B3AE3-C408-4DB0-AC79-386BC12379BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{558B3AE3-C408-4DB0-AC79-386BC12379BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{558B3AE3-C408-4DB0-AC79-386BC12379BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{558B3AE3-C408-4DB0-AC79-386BC12379BE}.Start|Any CPU.ActiveCfg = Release|Any CPU
-		{558B3AE3-C408-4DB0-AC79-386BC12379BE}.Start|Any CPU.Build.0 = Release|Any CPU
 		{2FFCEF0E-CEAD-4187-BBCD-CB0F60CF09AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2FFCEF0E-CEAD-4187-BBCD-CB0F60CF09AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FFCEF0E-CEAD-4187-BBCD-CB0F60CF09AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FFCEF0E-CEAD-4187-BBCD-CB0F60CF09AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2FFCEF0E-CEAD-4187-BBCD-CB0F60CF09AA}.Start|Any CPU.ActiveCfg = Debug|Any CPU
 		{2FFCEF0E-CEAD-4187-BBCD-CB0F60CF09AA}.Start|Any CPU.Build.0 = Debug|Any CPU
+		{5D21ED8E-81F9-48FE-BA9A-183CE9015EEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D21ED8E-81F9-48FE-BA9A-183CE9015EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D21ED8E-81F9-48FE-BA9A-183CE9015EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D21ED8E-81F9-48FE-BA9A-183CE9015EEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D21ED8E-81F9-48FE-BA9A-183CE9015EEC}.Start|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D21ED8E-81F9-48FE-BA9A-183CE9015EEC}.Start|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
