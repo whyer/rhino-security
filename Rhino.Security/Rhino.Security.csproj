@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Rhino.Security</PackageId>
+    <Authors>OSS Contributors</Authors>
+    <Description>Rhino Security is a security framework to provide row level security for NHibernate. Rhino Security is perfect for people who want to set up user and group security in their NHibernate domain models. It supports ACL and role based security.</Description>
+    <PackageLicenseFile>license.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/hibernating-rhinos/rhino-security/</PackageProjectUrl>
+    <PackageTags>nhibernate security authorization</PackageTags>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -44,6 +50,10 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\license.txt" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>
