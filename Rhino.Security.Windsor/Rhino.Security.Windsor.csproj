@@ -45,18 +45,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rhino.Security\Rhino.Security.csproj">
-      <Project>{DBA372FE-3D52-45B3-AF82-B37696328764}</Project>
-      <Name>Rhino.Security</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Castle.Windsor">
       <Version>3.1.0</Version>
     </PackageReference>
     <PackageReference Include="CommonServiceLocator.WindsorAdapter">
       <Version>1.0.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rhino.Security\Rhino.Security.csproj">
+      <Project>{2ffcef0e-cead-4187-bbcd-cb0f60cf09aa}</Project>
+      <Name>Rhino.Security</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -67,12 +67,6 @@
     <Compile Include="RhinoSecurity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rhino.Security\Rhino.Security.csproj">
-      <Project>{DBA372FE-3D52-45B3-AF82-B37696328764}</Project>
-      <Name>Rhino.Security</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -93,6 +87,12 @@
     <PackageReference Include="Castle.Activerecord">
       <Version>3.0.0.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rhino.Security\Rhino.Security.csproj">
+      <Project>{2ffcef0e-cead-4187-bbcd-cb0f60cf09aa}</Project>
+      <Name>Rhino.Security</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
