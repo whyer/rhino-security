@@ -9,6 +9,24 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Model\EntitiesGroup.hbm.xml" />
+    <None Remove="Model\EntityReference.hbm.xml" />
+    <None Remove="Model\EntityType.hbm.xml" />
+    <None Remove="Model\Operation.hbm.xml" />
+    <None Remove="Model\Permission.hbm.xml" />
+    <None Remove="Model\UsersGroup.hbm.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Model\EntitiesGroup.hbm.xml" />
+    <EmbeddedResource Include="Model\EntityReference.hbm.xml" />
+    <EmbeddedResource Include="Model\EntityType.hbm.xml" />
+    <EmbeddedResource Include="Model\Operation.hbm.xml" />
+    <EmbeddedResource Include="Model\Permission.hbm.xml" />
+    <EmbeddedResource Include="Model\UsersGroup.hbm.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="NHibernate" Version="5.2.0" />
     <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
   </ItemGroup>
