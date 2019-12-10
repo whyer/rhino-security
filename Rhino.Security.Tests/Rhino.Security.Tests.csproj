@@ -87,12 +87,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rhino.Security\Rhino.Security.csproj">
-      <Project>{DBA372FE-3D52-45B3-AF82-B37696328764}</Project>
-      <Name>Rhino.Security</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +136,12 @@
     <PackageReference Include="xunit">
       <Version>1.9.0.1566</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rhino.Security\Rhino.Security.csproj">
+      <Project>{2ffcef0e-cead-4187-bbcd-cb0f60cf09aa}</Project>
+      <Name>Rhino.Security</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
