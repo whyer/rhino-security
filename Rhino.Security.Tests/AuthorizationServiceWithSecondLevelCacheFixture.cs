@@ -19,7 +19,7 @@ namespace Rhino.Security.Tests
         {
             get
             {
-                return "Data Source=test.db";
+                return UseSqlDatabase ? base.ConnectionString : "Data Source=test.db";
             }
         }
 
