@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using NHibernate;
 using NHibernate.Criterion;
+using NHibernate.Linq;
 using NHibernate.SqlCommand;
+using NHibernate.Util;
 using Rhino.Security.Impl.Util;
 using Rhino.Security.Interfaces;
 using Rhino.Security.Model;
@@ -219,6 +223,11 @@ namespace Rhino.Security.Services
             return criteria.Alias + "." + Security.GetSecurityKeyProperty(rootType);
         }
 
+        private string GetSecurityKeyProperty(Type t)
+        {
+            return t.Name + "." + Security.GetSecurityKeyProperty(t);
+        }
+
 
 		private void AddPermissionDescriptionToAuthorizationInformation<TEntity>(string operation,
 		                                                                         AuthorizationInformation info,
@@ -361,5 +370,62 @@ namespace Rhino.Security.Services
 				return entityDescription;
 			return Resources.Everything;
 		}
+
+        public void AddPermissionsToQuery<T>(IUser user, string operation, IQueryable<T> query)
+        {
+            var securityKeyProperty = GetSecurityKeyProperty(typeof(T));
+
+            string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
+            DetachedCriteria criteria = DetachedCriteria.For<Permission>("permission")
+                .CreateAlias("Operation", "op")
+                .CreateAlias("EntitiesGroup", "entityGroup", JoinType.LeftOuterJoin)
+                .CreateAlias("entityGroup.Entities", "entityKey", JoinType.LeftOuterJoin)
+                .SetProjection(Projections.Property("Allow"))
+                .Add(Restrictions.In("op.Name", operationNames))
+                .Add(Restrictions.Eq("User", user)
+                || Subqueries.PropertyIn("UsersGroup.Id",
+                                         SecurityCriterions.AllGroups(user).SetProjection(Projections.Id())))
+                .Add(
+                Property.ForName(securityKeyProperty).EqProperty("permission.EntitySecurityKey") ||
+                Property.ForName(securityKeyProperty).EqProperty("entityKey.EntitySecurityKey") ||
+                (
+                    Restrictions.IsNull("permission.EntitySecurityKey") &&
+                    Restrictions.IsNull("permission.EntitiesGroup")
+                )
+                )
+                .SetMaxResults(1)
+                .AddOrder(Order.Desc("Level"))
+                .AddOrder(Order.Asc("Allow"));
+           // return Subqueries.Eq(true, criteria);
+
+           var permissions = PlaceholderQueryable.Of<Permission>()
+               .Where(p => operationNames.Contains(p.Operation.Name))
+               .Where(p => p.User == user)
+               //.Where(p => p.EntitySecurityKey == GetSecurityKeyProperty())
+               .OrderByDescending(p => p.Level)
+               .ThenBy(p => p.Allow)
+               .Select(p => p.Allow)
+               .First();
+            }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="usersgroup"></param>
+        /// <param name="accountEdit"></param>
+        /// <param name="query"></param>
+        /// <typeparam name="T"></typeparam>
+        public void AddPermissionsToQuery<T>(UsersGroup usersgroup, string accountEdit, IQueryable<T> query)
+        {
+            
+        }
 	}
+
+    public class PlaceholderQueryable
+    {
+        public static IQueryable<T> Of<T>()
+        {
+            return new EnumerableQuery<T>(Enumerable.Empty<T>());
+        }
+    }
 }
