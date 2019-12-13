@@ -1,5 +1,6 @@
+using System;
 using System.Linq;
-using Remotion.Linq.Parsing.Structure.IntermediateModel;
+using System.Linq.Expressions;
 using Rhino.Security.Impl.Util;
 using Rhino.Security.Model;
 using Xunit;
@@ -33,18 +34,27 @@ namespace Rhino.Security.Tests
 
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
 
-            var f =
-                (from a in query
-                    join permission in session.Query<Permission>() 
-                        on a.SecurityKey equals permission.EntitySecurityKey 
-                    where operationNames.Contains(permission.Operation.Name) &&
-                          permission.User == user
-                    orderby permission.Level descending, permission.Allow
-                    select new {permission.Allow, permission.EntitySecurityKey})
-                .Take(1);
-                
-            
-            Assert.Empty(query.ToList());
+            //var f =
+            //    (from a in query
+            //        join permission in session.Query<Permission>() 
+            //            on a.SecurityKey equals permission.EntitySecurityKey 
+            //        where operationNames.Contains(permission.Operation.Name) &&
+            //              Equals(permission.User, user)
+            //        orderby permission.Level descending, permission.Allow
+            //        select new {permission.Allow, permission.EntitySecurityKey})
+            //    .Take(1);
+
+
+            var enhancedQuery = from a in query
+                let havePermission = from p in session.Query<Permission>()
+                    where p.EntitySecurityKey == a.SecurityKey && p.User == user 
+                                                               && operationNames.Contains(p.Operation.Name)
+                    select p.Allow
+                where havePermission.FirstOrDefault()
+                select a;
+
+
+            Assert.Empty(enhancedQuery.ToList());
         }
 
         [Fact]
