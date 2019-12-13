@@ -1,3 +1,4 @@
+using System.Linq;
 using NHibernate;
 using NHibernate.Criterion;
 using Rhino.Security.Model;
@@ -89,5 +90,23 @@ namespace Rhino.Security.Interfaces
 		/// <returns></returns>
 		AuthorizationInformation GetAuthorizationInformation<TEntity>(IUser user, TEntity entity, string operation)
 			where TEntity : class;
-	}
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="operation"></param>
+        /// <param name="criteria"></param>
+        /// <typeparam name="T"></typeparam>
+        void AddPermissionsToQuery<T>(IUser user, string operation, System.Linq.IQueryable<T> criteria);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="usersgroup"></param>
+        /// <param name="accountEdit"></param>
+        /// <param name="query"></param>
+        /// <typeparam name="T"></typeparam>
+        void AddPermissionsToQuery<T>(UsersGroup usersgroup, string accountEdit, IQueryable<T> query);
+    }
 }
