@@ -35,7 +35,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(user);
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -50,7 +50,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(user);
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -65,7 +65,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(account);
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -80,7 +80,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(account);
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(user, account);
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(user, account);
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -125,7 +125,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(user, account);
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -140,7 +140,7 @@ namespace Rhino.Security.Tests
             session.Flush(); 
 
             Permission[] permissions = permissionService.GetGlobalPermissionsFor(user, "/Account/Edit");
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }        
 
         [Fact]
@@ -176,7 +176,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetGlobalPermissionsFor(user, new string[] { "/Account/Edit", "/Account/Disable" });
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -191,7 +191,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(user, account, "/Account/Edit");
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -206,7 +206,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(user, account, new string[] { "/Account/Edit", "/Account/Disable" });
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -242,7 +242,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor("/Account/Edit");
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -257,7 +257,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(new string[] { "/Account/Edit", "/Account/Disable" });
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -293,7 +293,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor("/Account/Edit");
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -308,7 +308,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(new string[] { "/Account/Edit", "/Account/Disable" });
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -368,7 +368,7 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(user, account, "/Account/Edit");
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -390,7 +390,7 @@ namespace Rhino.Security.Tests
             
 
             Permission[] permissions = permissionService.GetPermissionsFor(user, account, "/Account/Edit");
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
         }
 
         [Fact]
@@ -405,13 +405,13 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             Permission[] permissions = permissionService.GetPermissionsFor(user, account, "/Account/Edit");
-            Assert.Equal(1, permissions.Length);
+            Assert.Single(permissions);
 
             authorizationRepository.RemovePermission(permission);
             
 
             permissions = permissionService.GetPermissionsFor(user, account, "/Account/Edit");
-            Assert.Equal(0, permissions.Length);
+            Assert.Empty(permissions);
         }
     }
 }

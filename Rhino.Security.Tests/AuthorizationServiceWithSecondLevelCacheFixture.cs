@@ -114,7 +114,7 @@ namespace Rhino.Security.Tests
                 SillyContainer.SessionProvider = () => s3;
                 var anotherAuthorizationRepository = ServiceLocator.Current.GetInstance<IAuthorizationRepository>();
                 UsersGroup[] newGroups = anotherAuthorizationRepository.GetAssociatedUsersGroupFor(user);
-                Assert.Equal(1, newGroups.Length);
+                Assert.Single(newGroups);
                 Assert.Equal("Administrators", newGroups[0].Name);
                 tx.Commit();
             }
