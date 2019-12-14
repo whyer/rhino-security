@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 
 namespace Rhino.Security.Interfaces
 {
@@ -15,6 +16,8 @@ namespace Rhino.Security.Interfaces
 		/// </summary>
 		/// <param name="entity">The entity.</param>
 		Guid GetSecurityKeyFor(TEntity entity);
+
+        Expression<Func<TEntity, Guid>> GetSecurityKeyIdExpression();
 
 		/// <summary>
 		/// Gets the description of this security key, used when rhino security needs
