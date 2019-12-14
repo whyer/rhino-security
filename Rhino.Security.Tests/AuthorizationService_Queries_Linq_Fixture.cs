@@ -8,10 +8,7 @@ using Xunit.Abstractions;
 
 namespace Rhino.Security.Tests
 {
-    using NHibernate;
-    using NHibernate.Criterion;
-
-    public  class AuthorizationService_Queries_Linq_Fixture : DatabaseFixture
+    public class AuthorizationService_Queries_Linq_Fixture : DatabaseFixture
     {
         private IQueryable<Account> query;
 
@@ -45,11 +42,13 @@ namespace Rhino.Security.Tests
             //        select new {permission.Allow, permission.EntitySecurityKey})
             //    .Take(1);
 
+            var accountInformationExtractor = new AccountInformationExtractor(session);
 
             var enhancedQuery = from a in query
                 let havePermission = from p in session.Query<Permission>()
-                    where p.EntitySecurityKey == a.SecurityKey && p.User == user 
-                                                               && operationNames.Contains(p.Operation.Name)
+                    where p.User == user && operationNames.Contains(p.Operation.Name)
+                    where a.SecurityKey == p.EntitySecurityKey.Value || p.EntitySecurityKey == null
+                          orderby p.Level descending, p.Allow
                     select p.Allow
                 where havePermission.FirstOrDefault()
                 select a;
