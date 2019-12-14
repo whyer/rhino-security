@@ -3,12 +3,13 @@ using Rhino.Security.Model;
 using System;
 using System.IO;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Rhino.Security.Tests
 {
     public class DeleteEntityEventListenerFixture : DatabaseFixture
 	{
-        public DeleteEntityEventListenerFixture() : base(false)
+        public DeleteEntityEventListenerFixture(ITestOutputHelper outputHelper) : base(outputHelper, false)
         {
         }
         

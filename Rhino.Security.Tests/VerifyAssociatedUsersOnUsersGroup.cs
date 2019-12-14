@@ -3,6 +3,7 @@ using CommonServiceLocator;
 using Rhino.Security.Interfaces;
 using Xunit;
 using Rhino.Security.Model;
+using Xunit.Abstractions;
 
 
 namespace Rhino.Security.Tests
@@ -12,7 +13,7 @@ namespace Rhino.Security.Tests
         protected Int64 idMarcus;
         protected Int64 idAyende;
 
-        public VerifyAssociatedUsersOnUsersGroup()
+        public VerifyAssociatedUsersOnUsersGroup(ITestOutputHelper outputHelper) : base(outputHelper)
         {
             User marcus = new User { Name = "marcus" };
             session.Save(marcus);

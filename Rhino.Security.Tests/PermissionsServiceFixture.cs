@@ -1,5 +1,6 @@
 using Rhino.Security.Model;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Rhino.Security.Tests
 {
@@ -7,6 +8,9 @@ namespace Rhino.Security.Tests
 
     public class PermissionsServiceFixture : DatabaseFixture
     {
+        public PermissionsServiceFixture(ITestOutputHelper outputHelper) : base(outputHelper)
+        {}
+
         [Fact]
         public void CanCreatePermission()
         {

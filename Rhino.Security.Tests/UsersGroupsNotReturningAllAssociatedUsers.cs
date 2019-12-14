@@ -4,6 +4,7 @@ using NHibernate;
 using Rhino.Security.Interfaces;
 using Xunit;
 using Rhino.Security.Model;
+using Xunit.Abstractions;
 
 
 namespace Rhino.Security.Tests
@@ -14,7 +15,7 @@ namespace Rhino.Security.Tests
         private readonly long idAyende;
 
 
-        public UsersGroupsNotReturningAllAssociatedUsers()
+        public UsersGroupsNotReturningAllAssociatedUsers(ITestOutputHelper outputHelper) : base(outputHelper)
         {
             authorizationService = ServiceLocator.Current.GetInstance<IAuthorizationService>();
             permissionService = ServiceLocator.Current.GetInstance<IPermissionsService>();
