@@ -14,25 +14,12 @@ namespace Rhino.Security.Tests
         {}
 
         [Fact]
-        public void Extract()
-        {
-            var extractor = new AccountInformationExtractor(session);
-
-            var foundAccount = session.Query<Account>()
-                .Where(extractor.GetSecurityKeyExpression(account.SecurityKey))
-                .FirstOrDefault();
-
-            Assert.NotNull(foundAccount);
-            Assert.Equal(account.SecurityKey, foundAccount.SecurityKey);
-        }
-
-        [Fact]
         public void ExtractLinq()
         {
             var extractor = new AccountInformationExtractor(session);
 
             var foundAccount = session.Query<Account>()
-                        .Where(GetSecurityKeyExpression<Account>(account.SecurityKey))
+                        .Where(ExpressionHelper.GetSecurityKeyExpression<Account>(account.SecurityKey))
                         .First();
             
             Assert.Equal(account.SecurityKey, foundAccount.SecurityKey);
@@ -74,7 +61,12 @@ namespace Rhino.Security.Tests
             Assert.NotEmpty(objects);
         }
 
-        public Expression<Func<T, bool>> GetSecurityKeyExpression<T>(Guid entityGuid)
+        
+    }
+
+    public class ExpressionHelper
+    {
+        public static Expression<Func<T, bool>> GetSecurityKeyExpression<T>(Guid entityGuid)
         {
             var objectType = typeof(T);
 

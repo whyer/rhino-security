@@ -16,9 +16,9 @@ namespace Rhino.Security.Tests
             this.session = session;
         }
 
-        public Expression<Func<Account, bool>> GetSecurityKeyExpression(Guid id)
+        public Expression<Func<Account, Guid>> GetSecurityKeyIdExpression()
         {
-            return entity => entity.SecurityKey == id;
+            return entity => entity.SecurityKey;
         }
 
         public Guid GetSecurityKeyFor(Account entity)

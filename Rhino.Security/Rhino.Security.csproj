@@ -33,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="LinqKit.Core" Version="1.1.17" />
     <PackageReference Include="NHibernate" Version="5.2.0" />
     <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
   </ItemGroup>
@@ -53,7 +54,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\license.txt" Pack="true" PackagePath=""/>
+    <None Include="..\license.txt" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

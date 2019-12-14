@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using LinqKit;
 using Rhino.Security.Impl.Util;
 using Rhino.Security.Model;
 using Xunit;
@@ -12,7 +13,7 @@ namespace Rhino.Security.Tests
     {
         private IQueryable<Account> query;
 
-        public AuthorizationService_Queries_Linq_Fixture(ITestOutputHelper outputHelper) : base(outputHelper)
+        public AuthorizationService_Queries_Linq_Fixture(ITestOutputHelper outputHelper) : base(outputHelper, true)
         {
             query = session.Query<Account>();
         }
@@ -32,23 +33,16 @@ namespace Rhino.Security.Tests
 
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
 
-            //var f =
-            //    (from a in query
-            //        join permission in session.Query<Permission>() 
-            //            on a.SecurityKey equals permission.EntitySecurityKey 
-            //        where operationNames.Contains(permission.Operation.Name) &&
-            //              Equals(permission.User, user)
-            //        orderby permission.Level descending, permission.Allow
-            //        select new {permission.Allow, permission.EntitySecurityKey})
-            //    .Take(1);
-
             var accountInformationExtractor = new AccountInformationExtractor(session);
 
-            var enhancedQuery = from a in query
+            Expression<Func<Account, Guid>> securityKeyIdExpression = accountInformationExtractor.GetSecurityKeyIdExpression();
+
+            var enhancedQuery = 
+                from a in query.AsExpandable()
                 let havePermission = from p in session.Query<Permission>()
-                    where p.User == user && operationNames.Contains(p.Operation.Name)
-                    where a.SecurityKey == p.EntitySecurityKey.Value || p.EntitySecurityKey == null
-                          orderby p.Level descending, p.Allow
+                    where p.User == user && operationNames.Contains(p.Operation.Name) && 
+                          p.EntitySecurityKey == securityKeyIdExpression.Invoke(a)
+                    orderby p.Level descending, p.Allow
                     select p.Allow
                 where havePermission.FirstOrDefault()
                 select a;
