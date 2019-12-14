@@ -6,9 +6,11 @@ using NHibernate.Cache;
 using NHibernate.Cfg;
 using NHibernate.Dialect;
 using NHibernate.Driver;
+using NHibernate.SqlCommand;
 using NHibernate.Tool.hbm2ddl;
 using Rhino.Security.Interfaces;
 using Xunit;
+using Xunit.Abstractions;
 using Environment = NHibernate.Cfg.Environment;
 
 namespace Rhino.Security.Tests
@@ -25,10 +27,12 @@ namespace Rhino.Security.Tests
         protected ISession session;
         protected User user;
 
+        private readonly ITestOutputHelper output;
         public bool UseSqlDatabase;
 
-        protected DatabaseFixture(bool useSqlDatabase = false)
+        protected DatabaseFixture(ITestOutputHelper output, bool useSqlDatabase = false)
         {
+            this.output = output;
             UseSqlDatabase = useSqlDatabase;
 
             BeforeSetup();
@@ -64,7 +68,7 @@ namespace Rhino.Security.Tests
 
             factory = cfg.BuildSessionFactory();
 
-            session = factory.OpenSession();
+            session = factory.WithOptions().Interceptor(new XUnitSqlCaptureInterceptor(this.output)).OpenSession();
 
             new SchemaExport(cfg).Execute(false, true, false, session.Connection, null);
 
@@ -115,6 +119,23 @@ namespace Rhino.Security.Tests
 
             authorizationRepository.AssociateUserWith(user, "Administrators");
             authorizationRepository.AssociateEntityWith(account, "Important Accounts");
+        }
+    }
+
+    public class XUnitSqlCaptureInterceptor : EmptyInterceptor
+    {
+        public XUnitSqlCaptureInterceptor(ITestOutputHelper output)
+        {
+            this.Output = output;
+        }
+
+        public ITestOutputHelper Output { get; set; }
+
+        public override SqlString OnPrepareStatement(SqlString sql)
+        {
+            this.Output.WriteLine(sql.ToString());
+
+            return sql;
         }
     }
 }

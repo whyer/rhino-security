@@ -2,11 +2,15 @@ using System;
 using NHibernate.Exceptions;
 using Rhino.Security.Model;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Rhino.Security.Tests
 {
 	public class AuthorizationRepositoryFixture : DatabaseFixture
 	{
+        public AuthorizationRepositoryFixture(ITestOutputHelper outputHelper) : base(outputHelper)
+        {}
+
 		[Fact]
 		public void CanSaveUser()
 		{

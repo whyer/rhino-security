@@ -4,11 +4,17 @@ using CommonServiceLocator;
 using Rhino.Security.Interfaces;
 using Rhino.Security.Model;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Rhino.Security.Tests
 {
     public class AuthorizationServiceWithSecondLevelCacheFixture : DatabaseFixture
     {
+        public AuthorizationServiceWithSecondLevelCacheFixture(ITestOutputHelper outputHelper) : base(outputHelper)
+        {
+            
+        }
+
         // we need those to ensure that we aren't leaving the 2nd level
         // cache in an inconsistent state after deletion
         //TODO: Add entity to group, save, remove and query

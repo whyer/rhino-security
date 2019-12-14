@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using Rhino.Security.Impl.Util;
 using Rhino.Security.Model;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Rhino.Security.Tests
 {
@@ -14,7 +15,7 @@ namespace Rhino.Security.Tests
     {
         private IQueryable<Account> query;
 
-        public AuthorizationService_Queries_Linq_Fixture()
+        public AuthorizationService_Queries_Linq_Fixture(ITestOutputHelper outputHelper) : base(outputHelper)
         {
             query = session.Query<Account>();
         }
