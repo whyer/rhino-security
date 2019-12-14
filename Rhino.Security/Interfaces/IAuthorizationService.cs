@@ -90,23 +90,24 @@ namespace Rhino.Security.Interfaces
 		/// <returns></returns>
 		AuthorizationInformation GetAuthorizationInformation<TEntity>(IUser user, TEntity entity, string operation)
 			where TEntity : class;
-        
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="user"></param>
         /// <param name="operation"></param>
-        /// <param name="criteria"></param>
+        /// <param name="query"></param>
+        /// <param name="session"></param>
         /// <typeparam name="T"></typeparam>
-        void AddPermissionsToQuery<T>(IUser user, string operation, System.Linq.IQueryable<T> query, ISession session);
+        void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query, ISession session);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="usersgroup"></param>
-        /// <param name="accountEdit"></param>
+        /// <param name="operation"></param>
         /// <param name="query"></param>
         /// <typeparam name="T"></typeparam>
-        void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, IQueryable<T> query, ISession session);
+        void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query, ISession session);
     }
 }
