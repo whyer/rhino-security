@@ -376,8 +376,13 @@ namespace Rhino.Security.Services
         public void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query)
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
-            System.Linq.Expressions.Expression<Func<T, Guid>> securityKeyIdExpression = Security.ExtractKeyExpression<T>();
 
+            // Must declare a variable here to get the expression to use inside the query.
+            // We cannot have a function-call inside the expression
+            // LinqKit and the .AsExpandable() call is what makes it possible to invoke an expression inside
+            // the linq. Standard linq-to-nhibernate do not support it.
+            var securityKeyIdExpression = GetSecurityKeyGetterExpression<T>();
+            
             var enhancedQuery =
                 from a in query.AsExpandable()
                 let havePermission = from p in session.Query<Permission>()
@@ -406,7 +411,11 @@ namespace Rhino.Security.Services
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
 
-            System.Linq.Expressions.Expression<Func<T, Guid>> securityKeyIdExpression = Security.ExtractKeyExpression<T>();
+            // Must declare a variable here to get the expression to use inside the query.
+            // We cannot have a function-call inside the expression
+            // LinqKit and the .AsExpandable() call is what makes it possible to invoke an expression inside
+            // the linq. Standard linq-to-nhibernate do not support it.
+            var securityKeyIdExpression = GetSecurityKeyGetterExpression<T>();
 
             var enhancedQuery =
                 from a in query.AsExpandable()
@@ -426,6 +435,24 @@ namespace Rhino.Security.Services
                 select a;
 
             query = enhancedQuery;
+        }
+
+        internal static System.Linq.Expressions.Expression<Func<T, Guid>> GetSecurityKeyGetterExpression<T>()
+        {
+            // Found inspiration here:
+            // https://medium.com/@haapanen/dynamic-queries-using-nhibernate-with-the-help-of-c-expression-trees-2a384c7d24e9
+            
+            var objectType = typeof(T);
+
+            var item = System.Linq.Expressions.Expression.Parameter(typeof(T), "item");
+
+            // Where(item => item)
+            var property = System.Linq.Expressions.Expression.Property(item, Security.GetSecurityKeyProperty(objectType));
+
+            // Create lambda to use inside the where call
+            var lambda = System.Linq.Expressions.Expression.Lambda<Func<T, Guid>>(property, item);
+
+            return lambda;
         }
     }
 }

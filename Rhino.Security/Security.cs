@@ -37,42 +37,6 @@ namespace Rhino.Security
 		}
 
         /// <summary>
-        /// Get the expression to extract the key from the specified entity
-        /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
-        /// <returns></returns>
-        public static Expression<Func<TEntity, Guid>> ExtractKeyExpression<TEntity>()
-        {
-            var extractor = ServiceLocator.Current.GetInstance<IEntityInformationExtractor<TEntity>>();
-            return extractor.GetSecurityKeyIdExpression();
-        }
-
-        internal static Expression<Func<TEntity, Guid>> ExtractKeyExpression<TEntity>(Type type)
-            where TEntity : class
-        {
-            Guard.Against<ArgumentNullException>(type == null, "type");
-            Type[] entityType = { type };
-            Guard.Against<ArgumentException>(!entityType[0].IsClass, "Entity must be a class object");
-
-            Type extractorType = typeof(IEntityInformationExtractor<>);
-            Type genericExtractor = extractorType.MakeGenericType(entityType);
-            object extractor = null;
-
-            try {
-                extractor = ServiceLocator.Current.GetInstance(genericExtractor);
-            }
-            catch (ActivationException) {
-                // If no IEntityInformationExtractor is registered then the entity isn't 
-                // secured by Rhino.Security. Ignore the error and return an empty Guid.
-                return _ => Guid.Empty;
-            }
-
-            object expression = genericExtractor.InvokeMember("GetSecurityKeyIdExpression", BindingFlags.InvokeMethod, null, extractor, null);
-
-            return (Expression<Func<TEntity, Guid>>) expression;
-        }
-
-		/// <summary>
 		/// Extracts the key from the specified entity using the given object.
 		/// </summary>
 		/// <param name="entity">The entity.</param>
