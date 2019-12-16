@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>Rhino.Security</PackageId>
+    <Version>2.0.0</Version>
     <Authors>OSS Contributors</Authors>
     <Description>Rhino Security is a security framework to provide row level security for NHibernate. Rhino Security is perfect for people who want to set up user and group security in their NHibernate domain models. It supports ACL and role based security.</Description>
     <PackageLicenseFile>license.txt</PackageLicenseFile>
