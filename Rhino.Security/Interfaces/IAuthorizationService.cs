@@ -99,7 +99,7 @@ namespace Rhino.Security.Interfaces
         /// <param name="query"></param>
         /// <param name="session"></param>
         /// <typeparam name="T"></typeparam>
-        void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query, ISession session);
+        void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query);
 
         /// <summary>
         /// 
@@ -108,6 +108,6 @@ namespace Rhino.Security.Interfaces
         /// <param name="operation"></param>
         /// <param name="query"></param>
         /// <typeparam name="T"></typeparam>
-        void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query, ISession session);
+        void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query);
     }
 }

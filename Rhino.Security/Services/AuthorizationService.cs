@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using LinqKit;
 using NHibernate;
 using NHibernate.Criterion;
-using NHibernate.Linq;
 using NHibernate.SqlCommand;
-using NHibernate.Util;
 using Rhino.Security.Impl.Util;
 using Rhino.Security.Interfaces;
 using Rhino.Security.Model;
@@ -21,8 +18,8 @@ namespace Rhino.Security.Services
 	public class AuthorizationService : IAuthorizationService
 	{
 		private readonly IAuthorizationRepository authorizationRepository;
-
-		private readonly IPermissionsService permissionsService;
+        private readonly IPermissionsService permissionsService;
+        private readonly ISession session;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AuthorizationService"/> class.
@@ -30,11 +27,13 @@ namespace Rhino.Security.Services
 		/// <param name="permissionsService">The permissions service.</param>
 		/// <param name="authorizationRepository">The authorization editing service.</param>
 		public AuthorizationService(IPermissionsService permissionsService,
-		                            IAuthorizationRepository authorizationRepository)
+		                            IAuthorizationRepository authorizationRepository,
+                                    ISession session)
 		{
 			this.permissionsService = permissionsService;
 			this.authorizationRepository = authorizationRepository;
-		}
+            this.session = session;
+        }
 
 		#region IAuthorizationService Members
 
@@ -372,7 +371,7 @@ namespace Rhino.Security.Services
 			return Resources.Everything;
 		}
 
-        public void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query, ISession session)
+        public void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query)
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
             System.Linq.Expressions.Expression<Func<T, Guid>> securityKeyIdExpression = Security.ExtractKeyExpression<T>();
@@ -406,7 +405,7 @@ namespace Rhino.Security.Services
         /// <param name="operation"></param>
         /// <param name="query"></param>
         /// <typeparam name="T"></typeparam>
-        public void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query, ISession session)
+        public void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query)
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
 
