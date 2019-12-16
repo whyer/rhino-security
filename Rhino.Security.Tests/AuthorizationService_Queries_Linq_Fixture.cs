@@ -26,33 +26,6 @@ namespace Rhino.Security.Tests
         }
 
         [Fact]
-        public void WillReturnNothingIfNoPermissionHasBeenDefined_direct()
-        {
-            //authorizationService.AddPermissionsToQuery(user, "/Account/Edit", ref query);
-            var operation = "/Account/Edit";
-
-            string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
-
-            var accountInformationExtractor = new AccountInformationExtractor(session);
-
-            Expression<Func<Account, Guid>> securityKeyIdExpression = accountInformationExtractor.GetSecurityKeyIdExpression();
-
-            var enhancedQuery = 
-                from a in query.AsExpandable()
-                let havePermission = from p in session.Query<Permission>()
-                    where p.User == user && operationNames.Contains(p.Operation.Name) && 
-                          p.EntitySecurityKey  == securityKeyIdExpression.Invoke(a) || p.EntitySecurityKey == null ||
-                          p.EntitiesGroup.Entities.Any(entityReference => entityReference.EntitySecurityKey == securityKeyIdExpression.Invoke(a))
-                    orderby p.Level descending, p.Allow
-                    select p.Allow
-                where havePermission.FirstOrDefault()
-                select a;
-
-
-            Assert.Empty(enhancedQuery.ToList());
-        }
-
-        [Fact]
         public void WillReturnNothingForUsersGroupIfNoPermissionHasBeenDefined()
         {
             UsersGroup[] usersgroups = authorizationRepository.GetAssociatedUsersGroupFor(user);
