@@ -401,12 +401,22 @@ namespace Rhino.Security.Services
 
             System.Linq.Expressions.Expression<Func<T, Guid>> securityKeyIdExpression = Security.ExtractKeyExpression<T>();
 
-            var enhancedQuery = 
+            // System.Linq.Expressions.Expression<Func<UsersGroup, bool>> directUsersGroup = g => g.Users.Contains(user);
+
+            var enhancedQuery =
                 from a in query.AsExpandable()
                 let havePermission = from p in session.Query<Permission>()
-                    where p.User == user && operationNames.Contains(p.Operation.Name) && 
-                          p.EntitySecurityKey  == securityKeyIdExpression.Invoke(a) || p.EntitySecurityKey == null ||
-                          p.EntitiesGroup.Entities.Any(entityReference => entityReference.EntitySecurityKey == securityKeyIdExpression.Invoke(a))
+                    where operationNames.Contains(p.Operation.Name) &&
+                          (
+                              p.User == user ||
+                              p.UsersGroup.Users.Contains(user) ||
+                              p.UsersGroup.AllChildren.Any(g => g.Users.Contains(user))
+                          ) &&
+                          (
+                              p.EntitySecurityKey == securityKeyIdExpression.Invoke(a) ||
+                              p.EntitiesGroup.Entities.Any(entityReference => entityReference.EntitySecurityKey == securityKeyIdExpression.Invoke(a)) ||
+                              p.EntitySecurityKey == null && p.EntitiesGroup == null
+                          )
                     orderby p.Level descending, p.Allow
                     select p.Allow
                 where havePermission.FirstOrDefault()
@@ -424,6 +434,7 @@ namespace Rhino.Security.Services
         /// <typeparam name="T"></typeparam>
         public void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query, ISession session)
         {
+            throw new NotImplementedException("Groups not implemented yet!");
         }
 	}
 
@@ -431,7 +442,7 @@ namespace Rhino.Security.Services
     {
         public static IQueryable<T> Of<T>()
         {
-            return new EnumerableQuery<T>(Enumerable.Empty<T>());
+           return new EnumerableQuery<T>(Enumerable.Empty<T>());
         }
     }
 }

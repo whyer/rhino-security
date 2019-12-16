@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Rhino.Security.Model;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -60,8 +59,6 @@ namespace Rhino.Security.Tests
 
             Assert.NotEmpty(objects);
         }
-
-        
     }
 
     public class ExpressionHelper
