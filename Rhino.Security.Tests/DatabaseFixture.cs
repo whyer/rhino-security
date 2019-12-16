@@ -45,18 +45,20 @@ namespace Rhino.Security.Tests
 
             var driverName = typeof(SQLite20Driver).AssemblyQualifiedName;
             var dialectName = typeof(SQLiteDialect).AssemblyQualifiedName;
+            var releaseConnections = "on_close";
 
             if (useSqlDatabase)
             {
                 driverName = typeof(Sql2008ClientDriver).AssemblyQualifiedName;
                 dialectName = typeof(MsSql2012Dialect).AssemblyQualifiedName;
+                releaseConnections = "auto";
             }
 
             Configuration cfg = new Configuration()
                 .SetProperty(Environment.ConnectionDriver, driverName)
                 .SetProperty(Environment.Dialect, dialectName)
                 .SetProperty(Environment.ConnectionString, ConnectionString)
-                .SetProperty(Environment.ReleaseConnections, "auto")
+                .SetProperty(Environment.ReleaseConnections, releaseConnections)
                 .SetProperty(Environment.UseSecondLevelCache, "true")
                 .SetProperty(Environment.UseQueryCache, "true")
                 .SetProperty(Environment.ShowSql, "true")
@@ -89,7 +91,7 @@ namespace Rhino.Security.Tests
         public virtual void Dispose()
         {
             if (session.Transaction.IsActive)
-                session.Transaction.Commit();
+                session.Transaction.Rollback();
             session.Dispose();
         }
 
