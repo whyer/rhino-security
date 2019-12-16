@@ -27,7 +27,7 @@ namespace Rhino.Security.Tests
         protected ISession session;
         protected User user;
 
-        private readonly ITestOutputHelper output;
+        protected readonly ITestOutputHelper output;
         public bool UseSqlDatabase;
 
         protected DatabaseFixture(ITestOutputHelper output, bool useSqlDatabase = false)
@@ -48,7 +48,7 @@ namespace Rhino.Security.Tests
 
             if (useSqlDatabase)
             {
-                driverName = typeof(SqlClientDriver).AssemblyQualifiedName;
+                driverName = typeof(Sql2008ClientDriver).AssemblyQualifiedName;
                 dialectName = typeof(MsSql2012Dialect).AssemblyQualifiedName;
             }
 
@@ -89,7 +89,7 @@ namespace Rhino.Security.Tests
         public virtual void Dispose()
         {
             if (session.Transaction.IsActive)
-                session.Transaction.Rollback();
+                session.Transaction.Commit();
             session.Dispose();
         }
 
