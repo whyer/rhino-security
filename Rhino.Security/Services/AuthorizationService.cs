@@ -375,30 +375,6 @@ namespace Rhino.Security.Services
         public void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query, ISession session)
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
-
-            //var securityKeyProperty = GetSecurityKeyProperty(typeof(T));
-            //DetachedCriteria criteria = DetachedCriteria.For<Permission>("permission")
-            //    .CreateAlias("Operation", "op")
-            //    .CreateAlias("EntitiesGroup", "entityGroup", JoinType.LeftOuterJoin)
-            //    .CreateAlias("entityGroup.Entities", "entityKey", JoinType.LeftOuterJoin)
-            //    .SetProjection(Projections.Property("Allow"))
-            //    .Add(Restrictions.In("op.Name", operationNames))
-            //    .Add(Restrictions.Eq("User", user)
-            //         || Subqueries.PropertyIn("UsersGroup.Id",
-            //             SecurityCriterions.AllGroups(user).SetProjection(Projections.Id())))
-            //    .Add(
-            //        Property.ForName(securityKeyProperty).EqProperty("permission.EntitySecurityKey") ||
-            //        Property.ForName(securityKeyProperty).EqProperty("entityKey.EntitySecurityKey") ||
-            //        (
-            //            Restrictions.IsNull("permission.EntitySecurityKey") &&
-            //            Restrictions.IsNull("permission.EntitiesGroup")
-            //        )
-            //    )
-            //    .SetMaxResults(1)
-            //    .AddOrder(Order.Desc("Level"))
-            //    .AddOrder(Order.Asc("Allow"));
-            // return Subqueries.Eq(true, criteria);
-
             System.Linq.Expressions.Expression<Func<T, Guid>> securityKeyIdExpression = Security.ExtractKeyExpression<T>();
 
             var enhancedQuery =
@@ -432,26 +408,6 @@ namespace Rhino.Security.Services
         /// <typeparam name="T"></typeparam>
         public void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query, ISession session)
         {
-            //DetachedCriteria criteria = DetachedCriteria.For<Permission>("permission")
-            //    .CreateAlias("Operation", "op")
-            //    .CreateAlias("EntitiesGroup", "entityGroup", JoinType.LeftOuterJoin)
-            //    .CreateAlias("entityGroup.Entities", "entityKey", JoinType.LeftOuterJoin)
-            //    .SetProjection(Projections.Property("Allow"))
-            //    .Add(Expression.In("op.Name", operationNames))
-            //    .Add(Expression.Eq("UsersGroup", usersgroup))
-            //    .Add(
-            //        Property.ForName(securityKeyProperty).EqProperty("permission.EntitySecurityKey") ||
-            //        Property.ForName(securityKeyProperty).EqProperty("entityKey.EntitySecurityKey") ||
-            //        (
-            //            Expression.IsNull("permission.EntitySecurityKey") &&
-            //            Expression.IsNull("permission.EntitiesGroup")
-            //        )
-            //    )
-            //    .SetMaxResults(1)
-            //    .AddOrder(Order.Desc("Level"))
-            //    .AddOrder(Order.Asc("Allow"));
-            //return Subqueries.Eq(true, criteria);
-
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
 
             System.Linq.Expressions.Expression<Func<T, Guid>> securityKeyIdExpression = Security.ExtractKeyExpression<T>();
@@ -476,12 +432,4 @@ namespace Rhino.Security.Services
             query = enhancedQuery;
         }
 	}
-
-    public class PlaceholderQueryable
-    {
-        public static IQueryable<T> Of<T>()
-        {
-           return new EnumerableQuery<T>(Enumerable.Empty<T>());
-        }
-    }
 }
