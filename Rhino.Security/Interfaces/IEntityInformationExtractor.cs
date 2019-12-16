@@ -17,6 +17,10 @@ namespace Rhino.Security.Interfaces
 		/// <param name="entity">The entity.</param>
 		Guid GetSecurityKeyFor(TEntity entity);
 
+        /// <summary>
+        /// Get the expression to extract the key for the specified entity
+        /// </summary>
+        /// <returns></returns>
         Expression<Func<TEntity, Guid>> GetSecurityKeyIdExpression();
 
 		/// <summary>

@@ -37,6 +37,24 @@ namespace Rhino.Security.Interfaces
 		/// <param name = "operation">The operation.</param>
 		void AddPermissionsToQuery(IUser user, string operation, DetachedCriteria criteria);
 
+        /// <summary>
+        ///     Adds the permissions to the NHibernate Linq IQueryable query.
+        /// </summary>
+        /// <param name="user">The user</param>
+        /// <param name="operation">The operation</param>
+        /// <param name="query">The NHibernate Linq IQueryable</param>
+        /// <typeparam name="T">The type of the IQueryable</typeparam>
+        void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query);
+
+        /// <summary>
+        ///     Adds the permissions to the NHibernate Linq IQueryable query for the given usergorup
+        /// </summary>
+        /// <param name="usersgroup">The usergroup</param>
+        /// <param name="operation">The operation</param>
+        /// <param name="query">The NHibernate Linq IQueryable</param>
+        /// <typeparam name="T">The type of the IQueryable</typeparam>
+        void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query);
+
 		///<summary>
 		///	Adds the permissions to the criteria query for the given usersgroup
 		///</summary>
@@ -90,24 +108,5 @@ namespace Rhino.Security.Interfaces
 		/// <returns></returns>
 		AuthorizationInformation GetAuthorizationInformation<TEntity>(IUser user, TEntity entity, string operation)
 			where TEntity : class;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="operation"></param>
-        /// <param name="query"></param>
-        /// <param name="session"></param>
-        /// <typeparam name="T"></typeparam>
-        void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="usersgroup"></param>
-        /// <param name="operation"></param>
-        /// <param name="query"></param>
-        /// <typeparam name="T"></typeparam>
-        void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query);
     }
 }

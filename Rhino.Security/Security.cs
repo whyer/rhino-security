@@ -36,6 +36,11 @@ namespace Rhino.Security
 			return extractor.GetSecurityKeyFor(entity);
 		}
 
+        /// <summary>
+        /// Get the expression to extract the key from the specified entity
+        /// </summary>
+        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <returns></returns>
         public static Expression<Func<TEntity, Guid>> ExtractKeyExpression<TEntity>()
         {
             var extractor = ServiceLocator.Current.GetInstance<IEntityInformationExtractor<TEntity>>();
