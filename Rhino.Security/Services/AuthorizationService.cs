@@ -401,8 +401,6 @@ namespace Rhino.Security.Services
 
             System.Linq.Expressions.Expression<Func<T, Guid>> securityKeyIdExpression = Security.ExtractKeyExpression<T>();
 
-            // System.Linq.Expressions.Expression<Func<UsersGroup, bool>> directUsersGroup = g => g.Users.Contains(user);
-
             var enhancedQuery =
                 from a in query.AsExpandable()
                 let havePermission = from p in session.Query<Permission>()
@@ -434,7 +432,48 @@ namespace Rhino.Security.Services
         /// <typeparam name="T"></typeparam>
         public void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query, ISession session)
         {
-            throw new NotImplementedException("Groups not implemented yet!");
+            //DetachedCriteria criteria = DetachedCriteria.For<Permission>("permission")
+            //    .CreateAlias("Operation", "op")
+            //    .CreateAlias("EntitiesGroup", "entityGroup", JoinType.LeftOuterJoin)
+            //    .CreateAlias("entityGroup.Entities", "entityKey", JoinType.LeftOuterJoin)
+            //    .SetProjection(Projections.Property("Allow"))
+            //    .Add(Expression.In("op.Name", operationNames))
+            //    .Add(Expression.Eq("UsersGroup", usersgroup))
+            //    .Add(
+            //        Property.ForName(securityKeyProperty).EqProperty("permission.EntitySecurityKey") ||
+            //        Property.ForName(securityKeyProperty).EqProperty("entityKey.EntitySecurityKey") ||
+            //        (
+            //            Expression.IsNull("permission.EntitySecurityKey") &&
+            //            Expression.IsNull("permission.EntitiesGroup")
+            //        )
+            //    )
+            //    .SetMaxResults(1)
+            //    .AddOrder(Order.Desc("Level"))
+            //    .AddOrder(Order.Asc("Allow"));
+            //return Subqueries.Eq(true, criteria);
+
+            string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
+
+            System.Linq.Expressions.Expression<Func<T, Guid>> securityKeyIdExpression = Security.ExtractKeyExpression<T>();
+
+            var enhancedQuery =
+                from a in query.AsExpandable()
+                let havePermission = from p in session.Query<Permission>()
+                    where operationNames.Contains(p.Operation.Name) &&
+                          (
+                              p.UsersGroup == usersgroup
+                          ) &&
+                          (
+                              p.EntitySecurityKey == securityKeyIdExpression.Invoke(a) ||
+                              p.EntitiesGroup.Entities.Any(entityReference => entityReference.EntitySecurityKey == securityKeyIdExpression.Invoke(a)) ||
+                              p.EntitySecurityKey == null && p.EntitiesGroup == null
+                          )
+                    orderby p.Level descending, p.Allow
+                    select p.Allow
+                where havePermission.FirstOrDefault()
+                select a;
+
+            query = enhancedQuery;
         }
 	}
 
