@@ -26,6 +26,7 @@ namespace Rhino.Security.Services
         /// </summary>
         /// <param name="permissionsService">The permissions service.</param>
         /// <param name="authorizationRepository">The authorization editing service.</param>
+        /// <param name="session">The current session</param>
         public AuthorizationService(IPermissionsService permissionsService,
                                     IAuthorizationRepository authorizationRepository,
                                     ISession session)
@@ -371,6 +372,7 @@ namespace Rhino.Security.Services
             return Resources.Everything;
         }
 
+        /// <inheritdoc />
         public void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query)
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
@@ -398,13 +400,8 @@ namespace Rhino.Security.Services
             query = enhancedQuery;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="usersgroup"></param>
-        /// <param name="operation"></param>
-        /// <param name="query"></param>
-        /// <typeparam name="T"></typeparam>
+
+        /// <inheritdoc />
         public void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query)
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
