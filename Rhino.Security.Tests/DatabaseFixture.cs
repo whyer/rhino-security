@@ -15,6 +15,7 @@ using Environment = NHibernate.Cfg.Environment;
 
 namespace Rhino.Security.Tests
 {
+    [Collection("DatabaseFixture tests")]
     public abstract class DatabaseFixture : IDisposable
     {
         protected readonly ISessionFactory factory;

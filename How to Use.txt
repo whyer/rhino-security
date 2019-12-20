@@ -34,5 +34,4 @@ The following is an example of configuring Rhino Security using Windsor:
 			.ImplementedBy<PermissionsService>()
 			.Lifestyle.Is(Lifestyle.Transient)
 		);
-
-Alternatively Castle Windsor installer is provided in Rhino.Security.Windsor assembly
+		);

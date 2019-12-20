@@ -9,6 +9,7 @@
     <PackageLicenseFile>license.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/hibernating-rhinos/rhino-security/</PackageProjectUrl>
     <PackageTags>nhibernate security authorization</PackageTags>
+    <Copyright>Hibernating Rhinos &amp; Ayende Rahien 2004 - 2009 &amp; Contributors 2010-2011</Copyright>
   </PropertyGroup>
 
   <PropertyGroup>
