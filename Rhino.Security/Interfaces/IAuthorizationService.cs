@@ -44,7 +44,8 @@ namespace Rhino.Security.Interfaces
         /// <param name="operation">The operation</param>
         /// <param name="query">The NHibernate Linq IQueryable</param>
         /// <typeparam name="T">The type of the IQueryable</typeparam>
-        void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query);
+        /// <returns>Queryable with permissions added</returns>
+        IQueryable<T> AddPermissionsToQuery<T>(IUser user, string operation, IQueryable<T> query);
 
         /// <summary>
         ///     Adds the permissions to the NHibernate Linq IQueryable query for the given usergorup
@@ -53,7 +54,8 @@ namespace Rhino.Security.Interfaces
         /// <param name="operation">The operation</param>
         /// <param name="query">The NHibernate Linq IQueryable</param>
         /// <typeparam name="T">The type of the IQueryable</typeparam>
-        void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query);
+        /// <returns>Queryable with permissions added</returns>
+        IQueryable<T> AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, IQueryable<T> query);
 
 		///<summary>
 		///	Adds the permissions to the criteria query for the given usersgroup

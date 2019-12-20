@@ -373,7 +373,7 @@ namespace Rhino.Security.Services
         }
 
         /// <inheritdoc />
-        public void AddPermissionsToQuery<T>(IUser user, string operation, ref IQueryable<T> query)
+        public IQueryable<T> AddPermissionsToQuery<T>(IUser user, string operation, IQueryable<T> query)
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
 
@@ -402,12 +402,12 @@ namespace Rhino.Security.Services
                 where havePermission.FirstOrDefault()
                 select a;
 
-            query = enhancedQuery;
+            return enhancedQuery;
         }
 
 
         /// <inheritdoc />
-        public void AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, ref IQueryable<T> query)
+        public IQueryable<T> AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, IQueryable<T> query)
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
 
@@ -434,7 +434,7 @@ namespace Rhino.Security.Services
                 where havePermission.FirstOrDefault()
                 select a;
 
-            query = enhancedQuery;
+            return enhancedQuery;
         }
 
         internal static System.Linq.Expressions.Expression<Func<T, Guid>> GetSecurityKeyGetterExpression<T>()
