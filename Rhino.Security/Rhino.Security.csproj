@@ -57,6 +57,7 @@
 
   <ItemGroup>
     <None Include="..\license.txt" Pack="true" PackagePath="" />
+    <None Include="..\readme.txt" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>
