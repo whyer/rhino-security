@@ -1,9 +1,5 @@
-using System;
 using System.Linq;
-using System.Linq.Expressions;
-using LinqKit;
-using Rhino.Security.Impl.Util;
-using Rhino.Security.Interfaces;
+using Rhino.Security.Linq;
 using Rhino.Security.Model;
 using Xunit;
 using Xunit.Abstractions;
@@ -560,7 +556,27 @@ namespace Rhino.Security.Tests
         }
 
         [Fact]
-        public void WillWorkWithMoreFilters()
+        public void WillReturnNothingOnUserWhenNoPermissionsAreDefinedUsingExtensionMethod()
+        {
+            var queryWithPermissions = query
+                .AddPermissions(authorizationService, user, "/Account/Edit");
+
+            Assert.Empty(queryWithPermissions.ToList());
+        }
+
+        [Fact]
+        public void WillReturnNothingOnUserGroupWhenNoPermissionsAreDefinedUsingExtensionMethod()
+        {
+            UsersGroup usersgroup = authorizationRepository.GetUsersGroupByName("Administrators");
+
+            var queryWithPermissions = query
+                .AddPermissions(authorizationService, usersgroup, "/Account/Edit");
+
+            Assert.Empty(queryWithPermissions.ToList());
+        }
+
+        [Fact]
+        public void WillReturnResultForUserWhenPermissionsAreDefinedUsingExtensionMethod()
         {
             permissionsBuilderService
                 .Allow("/Account/Edit")
@@ -572,23 +588,29 @@ namespace Rhino.Security.Tests
             session.Flush();
 
             var queryWithPermissions = query
-                .Where(x => x.Name == "not the name")
                 .AddPermissions(authorizationService, user, "/Account/Edit");
 
-            Assert.Empty(queryWithPermissions.ToList());
+            Assert.NotEmpty(queryWithPermissions.ToList());
         }
-    }
 
-    internal static class Extensions
-    {
-        internal static IQueryable<T> AddPermissions<T>(
-            this IQueryable<T> query,
-            IAuthorizationService authorizationService, 
-            IUser user,
-            string permission)
+        [Fact]
+        public void WillReturnResultForUserGroupWhenPermissionsAreDefinedUsingExtensionMethod()
         {
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, permission, query);
-            return queryWithPermissions;
+            UsersGroup usersgroup = authorizationRepository.GetUsersGroupByName("Administrators");
+
+            permissionsBuilderService
+                .Allow("/Account/Edit")
+                .For(usersgroup)
+                .On(account)
+                .DefaultLevel()
+                .Save();
+
+            session.Flush();
+
+            var queryWithPermissions = query
+                .AddPermissions(authorizationService, usersgroup, "/Account/Edit");
+
+            Assert.NotEmpty(queryWithPermissions.ToList());
         }
     }
 }
