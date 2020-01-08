@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using LinqKit;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
@@ -8,6 +7,9 @@ using Rhino.Security.Impl.Util;
 using Rhino.Security.Interfaces;
 using Rhino.Security.Model;
 using Rhino.Security.Properties;
+using NHibernate.Linq;
+using LinqExpr = System.Linq.Expressions.Expression;
+using LinqExprs = System.Linq.Expressions;
 
 namespace Rhino.Security.Services
 {
@@ -212,6 +214,109 @@ namespace Rhino.Security.Services
             return Subqueries.Eq(true, criteria);
         }
 
+        private static IQueryable<TEntity> GetPermissionQueryInternal<TEntity>(IUser user, string operation, IQueryable<TEntity> query) where TEntity : class
+        {
+            var nhQuery = (NhQueryable<TEntity>)query;
+            var nhQueryProvider = (DefaultQueryProvider)nhQuery.Provider;
+            var session = (ISession) nhQueryProvider.Session;
+
+            var securityKeyProperty = Security.GetSecurityKeyProperty(typeof(TEntity));
+
+            string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
+            var userGroupIds = SecurityCriterions.AllGroups(user, session).Select(x => x.Id);
+
+            var entityParam = LinqExpr.Parameter(typeof(TEntity), "e");
+            var entityRefParam = LinqExpr.Parameter(typeof(EntityReference), "er");
+            var permParam = LinqExpr.Parameter(typeof(Permission), "p");
+
+            // .Any<EntityReference>(...)
+            var anyEntityRef = SecurityCriterions.anyFunc.MakeGenericMethod(typeof(EntityReference));
+
+            // p.EntitySecurityKey == e.SecurityKey
+            var isEqPermSecKey = LinqExpr.Equal(LinqExpr.PropertyOrField(permParam, "EntitySecurityKey"), LinqExpr.Convert(LinqExpr.PropertyOrField(entityParam, securityKeyProperty), typeof(Guid?)));
+
+            // er.EntitySecurityKey == e.SecurityKey
+            var isEqEntityRefSecKey = LinqExpr.Equal(LinqExpr.PropertyOrField(entityRefParam, "EntitySecurityKey"), LinqExpr.PropertyOrField(entityParam, securityKeyProperty));
+
+            // IQueryable.Any<EntityReference>(p.EntitiesGroup.Entities, er => er.EntitySecurityKey == e.SecurityKey)
+            var isAnyEqEntitySecKey = LinqExpr.Call(anyEntityRef, LinqExpr.PropertyOrField(LinqExpr.PropertyOrField(permParam, "EntitiesGroup"), "Entities"),
+                LinqExpr.Lambda(isEqEntityRefSecKey, entityRefParam));
+
+            // p.EntitySecurityKey==(Guid?)null && p.EntitiesGroup==null
+            var isNullSecKeyOrGroup = LinqExpr.AndAlso(
+                LinqExpr.Equal(LinqExpr.PropertyOrField(permParam, "EntitySecurityKey"), LinqExpr.Convert(LinqExpr.Constant(null), typeof(Guid?))),
+                LinqExpr.ReferenceEqual(LinqExpr.PropertyOrField(permParam, "EntitiesGroup"), LinqExpr.Constant(null)));
+
+            // (p.EntitySecurityKey==(Guid?)null && p.EntitiesGroup==null)
+            // || p.EntitySecurityKey == e.SecurityKey
+            // || IQueryable.Any<EntityReference>(p.EntitiesGroup.Entities, er => er.EntitySecurityKey == e.SecurityKey)
+            var isPermMatch = LinqExpr.OrElse(isNullSecKeyOrGroup, LinqExpr.OrElse(isEqPermSecKey, isAnyEqEntitySecKey));
+
+            LinqExprs.Expression<Func<bool>> isPermAllowed = () => true == session.Query<Permission>()
+                .Where(p => operationNames.Contains(p.Operation.Name))
+                .Where(p => p.User == user || userGroupIds.Contains(p.UsersGroup.Id))
+                .Where(LinqExpr.Lambda<Func<Permission, bool>>(isPermMatch, permParam))
+                .OrderByDescending(p => p.Level)
+                .ThenBy(p => p.Allow)
+                .Select(p => p.Allow)
+                .FirstOrDefault();
+
+            query = query.Where(LinqExpr.Lambda<Func<TEntity, bool>>(isPermAllowed.Body, entityParam));
+
+            return query;
+        }
+
+        private static IQueryable<TEntity> GetPermissionQueryInternal<TEntity>(UsersGroup usersgroup, string operation, IQueryable<TEntity> query) where TEntity : class
+        {
+            var nhQuery = (NhQueryable<TEntity>)query;
+            var nhQueryProvider = (DefaultQueryProvider)nhQuery.Provider;
+            var session = (ISession)nhQueryProvider.Session;
+
+            var securityKeyProperty = Security.GetSecurityKeyProperty(typeof(TEntity));
+
+            string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
+
+            var entityParam = LinqExpr.Parameter(typeof(TEntity), "e");
+            var entityRefParam = LinqExpr.Parameter(typeof(EntityReference), "er");
+            var permParam = LinqExpr.Parameter(typeof(Permission), "p");
+
+            // .Any<EntityReference>(...)
+            var anyEntityRef = SecurityCriterions.anyFunc.MakeGenericMethod(typeof(EntityReference));
+
+            // p.EntitySecurityKey == e.SecurityKey
+            var isEqPermSecKey = LinqExpr.Equal(LinqExpr.PropertyOrField(permParam, "EntitySecurityKey"), LinqExpr.Convert(LinqExpr.PropertyOrField(entityParam, securityKeyProperty), typeof(Guid?)));
+
+            // er.EntitySecurityKey == e.SecurityKey
+            var isEqEntityRefSecKey = LinqExpr.Equal(LinqExpr.PropertyOrField(entityRefParam, "EntitySecurityKey"), LinqExpr.PropertyOrField(entityParam, securityKeyProperty));
+
+            // IQueryable.Any<EntityReference>(p.EntitiesGroup.Entities, er => er.EntitySecurityKey == e.SecurityKey)
+            var isAnyEqEntitySecKey = LinqExpr.Call(anyEntityRef, LinqExpr.PropertyOrField(LinqExpr.PropertyOrField(permParam, "EntitiesGroup"), "Entities"),
+                LinqExpr.Lambda(isEqEntityRefSecKey, entityRefParam));
+
+            // p.EntitySecurityKey==(Guid?)null && p.EntitiesGroup==null
+            var isNullSecKeyOrGroup = LinqExpr.AndAlso(
+                LinqExpr.Equal(LinqExpr.PropertyOrField(permParam, "EntitySecurityKey"), LinqExpr.Convert(LinqExpr.Constant(null), typeof(Guid?))),
+                LinqExpr.ReferenceEqual(LinqExpr.PropertyOrField(permParam, "EntitiesGroup"), LinqExpr.Constant(null)));
+
+            // (p.EntitySecurityKey==(Guid?)null && p.EntitiesGroup==null)
+            // || p.EntitySecurityKey == e.SecurityKey
+            // || IQueryable.Any<EntityReference>(p.EntitiesGroup.Entities, er => er.EntitySecurityKey == e.SecurityKey)
+            var isPermMatch = LinqExpr.OrElse(isNullSecKeyOrGroup, LinqExpr.OrElse(isEqPermSecKey, isAnyEqEntitySecKey));
+
+            LinqExprs.Expression<Func<bool>> isPermAllowed = () => true == session.Query<Permission>()
+                .Where(p => operationNames.Contains(p.Operation.Name))
+                .Where(p => p.UsersGroup == usersgroup)
+                .Where(LinqExpr.Lambda<Func<Permission, bool>>(isPermMatch, permParam))
+                .OrderByDescending(p => p.Level)
+                .ThenBy(p => p.Allow)
+                .Select(p => p.Allow)
+                .FirstOrDefault();
+
+            query = query.Where(LinqExpr.Lambda<Func<TEntity, bool>>(isPermAllowed.Body, entityParam));
+
+            return query;
+        }
+
         private string GetSecurityKeyProperty(DetachedCriteria criteria)
         {
             Type rootType = criteria.GetRootEntityTypeIfAvailable();
@@ -227,6 +332,12 @@ namespace Rhino.Security.Services
         private string GetSecurityKeyProperty(Type t)
         {
             return t.Name + "." + Security.GetSecurityKeyProperty(t);
+        }
+
+        private string GetSecurityKeyProperty<TEntity>(IQueryable<TEntity> query) where TEntity : class
+        {
+            var rootType = typeof(TEntity);
+            return Security.GetSecurityKeyProperty(rootType);
         }
 
 
@@ -372,87 +483,31 @@ namespace Rhino.Security.Services
 			return Resources.Everything;
 		}
 
-        /// <inheritdoc />
-        public IQueryable<T> AddPermissionsToQuery<T>(IUser user, string operation, IQueryable<T> query)
+        /// <summary>
+        /// Adds the permissions to the linq query.
+        /// </summary>
+        /// <typeparam name="TEntity">The entity type.</typeparam>
+        /// <param name="user">The user.</param>
+        /// <param name="operation">The operation.</param>
+        /// <param name="query">The linq query.</param>
+        /// <returns>The modified linq query.</returns>
+        public IQueryable<TEntity> AddPermissionsToQuery<TEntity>(IUser user, string operation, IQueryable<TEntity> query) where TEntity : class
         {
-            string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
-
-            // Must declare a variable here to get the expression to use inside the query.
-            // We cannot have a function-call inside the expression
-            // LinqKit and the .AsExpandable() call is what makes it possible to invoke an expression inside
-            // the linq. Standard linq-to-nhibernate do not support it.
-            var securityKeyIdExpression = GetSecurityKeyGetterExpression<T>();
-            
-            var enhancedQuery =
-                from a in query.AsExpandable()
-                let havePermission = from p in session.Query<Permission>()
-                    where operationNames.Contains(p.Operation.Name) &&
-                          (
-                              p.User == user ||
-                              p.UsersGroup.Users.Contains(user) ||
-                              p.UsersGroup.AllChildren.Any(g => g.Users.Contains(user))
-                          ) &&
-                          (
-                              p.EntitySecurityKey == securityKeyIdExpression.Invoke(a) ||
-                              p.EntitiesGroup.Entities.Any(entityReference => entityReference.EntitySecurityKey == securityKeyIdExpression.Invoke(a)) ||
-                              p.EntitySecurityKey == null && p.EntitiesGroup == null
-                          )
-                    orderby p.Level descending, p.Allow
-                    select p.Allow
-                where havePermission.FirstOrDefault()
-                select a;
-
-            return enhancedQuery;
+            return GetPermissionQueryInternal<TEntity>(user, operation, query);
         }
 
-
-        /// <inheritdoc />
-        public IQueryable<T> AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, IQueryable<T> query)
+        /// <summary>
+        /// Adds the permissions to the linq query.
+        /// </summary>
+        /// <typeparam name="TEntity">The entity type.</typeparam>
+        ///<param name="usersgroup">The usersgroup. Only permissions directly related to this usergroup
+        /// are taken into account</param>
+        /// <param name="operation">The operation.</param>
+        /// <param name="query">The linq query.</param>
+        /// <returns>The modified linq query.</returns>
+        public IQueryable<TEntity> AddPermissionsToQuery<TEntity>(UsersGroup usersgroup, string operation, IQueryable<TEntity> query) where TEntity : class
         {
-            string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
-
-            // Must declare a variable here to get the expression to use inside the query.
-            // We cannot have a function-call inside the expression
-            // LinqKit and the .AsExpandable() call is what makes it possible to invoke an expression inside
-            // the linq. Standard linq-to-nhibernate do not support it.
-            var securityKeyIdExpression = GetSecurityKeyGetterExpression<T>();
-
-            var enhancedQuery =
-                from a in query.AsExpandable()
-                let havePermission = from p in session.Query<Permission>()
-                    where operationNames.Contains(p.Operation.Name) &&
-                          (
-                              p.UsersGroup == usersgroup
-                          ) &&
-                          (
-                              p.EntitySecurityKey == securityKeyIdExpression.Invoke(a) ||
-                              p.EntitiesGroup.Entities.Any(entityReference => entityReference.EntitySecurityKey == securityKeyIdExpression.Invoke(a)) ||
-                              p.EntitySecurityKey == null && p.EntitiesGroup == null
-                          )
-                    orderby p.Level descending, p.Allow
-                    select p.Allow
-                where havePermission.FirstOrDefault()
-                select a;
-
-            return enhancedQuery;
-        }
-
-        internal static System.Linq.Expressions.Expression<Func<T, Guid>> GetSecurityKeyGetterExpression<T>()
-        {
-            // Found inspiration here:
-            // https://medium.com/@haapanen/dynamic-queries-using-nhibernate-with-the-help-of-c-expression-trees-2a384c7d24e9
-            
-            var objectType = typeof(T);
-
-            var item = System.Linq.Expressions.Expression.Parameter(typeof(T), "item");
-
-            // Where(item => item)
-            var property = System.Linq.Expressions.Expression.Property(item, Security.GetSecurityKeyProperty(objectType));
-
-            // Create lambda to use inside the where call
-            var lambda = System.Linq.Expressions.Expression.Lambda<Func<T, Guid>>(property, item);
-
-            return lambda;
+            return GetPermissionQueryInternal<TEntity>(usersgroup, operation, query);
         }
 	}
 }

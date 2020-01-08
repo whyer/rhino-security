@@ -22,7 +22,7 @@ namespace Rhino.Security.Linq
             this IQueryable<T> query,
             IAuthorizationService authorizationService, 
             IUser user,
-            string operation)
+            string operation) where T : class
         {
             var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, operation, query);
             return queryWithPermissions;
@@ -41,7 +41,7 @@ namespace Rhino.Security.Linq
             this IQueryable<T> query,
             IAuthorizationService authorizationService, 
             UsersGroup usersGroup,
-            string operation)
+            string operation) where T : class
         {
             var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersGroup, operation, query);
             return queryWithPermissions;

@@ -14,13 +14,33 @@ namespace Rhino.Security
 	/// <summary>
 	/// This class allows to configure the security system
 	/// </summary>
-	public class Security
+	public static class Security
 	{
 		private static readonly MethodInfo getSecurityKeyMethod = typeof (Security).GetMethod(
 			"GetSecurityKeyPropertyInternal", BindingFlags.NonPublic | BindingFlags.Static);
 
 		private static readonly Dictionary<Type, Func<string>> GetSecurityKeyPropertyCache =
 			new Dictionary<Type, Func<string>>();
+
+        private static string _userTypeIdPropName = null;
+        private static Type _userTypeForIdPropName = null;
+
+		/// <summary>
+        /// Gets the ID property name for the given user type
+        /// </summary>
+        /// <param name="session">The session to be used for the class metadata lookup.</param>
+        /// <returns>The ID property name.</returns>
+        internal static string GetUserTypeIdPropertyName(NHibernate.ISession session)
+        {
+            if (_userTypeIdPropName == null || _userTypeForIdPropName != Security.UserType)
+                _userTypeIdPropName = session.SessionFactory.GetClassMetadata(Security.UserType).IdentifierPropertyName;
+            return _userTypeIdPropName;
+        }
+
+        /// <summary>
+        /// The type of the IUser implementation.
+        /// </summary>
+        public static Type UserType { get; private set; }
 
 		/// <summary>
 		/// Extracts the key from the specified entity.
@@ -36,7 +56,7 @@ namespace Rhino.Security
 			return extractor.GetSecurityKeyFor(entity);
 		}
 
-        /// <summary>
+		/// <summary>
 		/// Extracts the key from the specified entity using the given object.
 		/// </summary>
 		/// <param name="entity">The entity.</param>
@@ -104,16 +124,17 @@ namespace Rhino.Security
             return ServiceLocator.Current.GetInstance<IEntityInformationExtractor<TEntity>>().SecurityKeyPropertyName;
 		}
 
-		///<summary>
-		/// Setup NHibernate to include Rhino Security configuration
-		///</summary>
-		public static void Configure<TUserType>(Configuration cfg, SecurityTableStructure securityTableStructure)
-			where TUserType : IUser 
-		{
-			cfg.AddAssembly(typeof (IUser).Assembly);
-			new SchemaChanger(cfg, securityTableStructure).Change();
-			new UserMapper(cfg, typeof(TUserType)).Map();
+        ///<summary>
+        /// Setup NHibernate to include Rhino Security configuration
+        ///</summary>
+        public static void Configure<TUserType>(Configuration cfg, SecurityTableStructure securityTableStructure)
+             where TUserType : IUser
+        {
+            UserType = typeof(TUserType);
+            cfg.AddAssembly(typeof (IUser).Assembly);
+            new SchemaChanger(cfg, securityTableStructure).Change();
+            new UserMapper(cfg, typeof(TUserType)).Map();
 			cfg.SetListener(ListenerType.PreDelete, new DeleteEntityEventListener());
-		}
+        }
 	}
 }
