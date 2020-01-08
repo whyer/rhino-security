@@ -54,27 +54,7 @@ namespace Rhino.Security.Interfaces
 		/// <param name="operation">The operation.</param>
 		void AddPermissionsToQuery(IUser user, string operation, DetachedCriteria criteria);
 
-        /// <summary>
-        ///     Adds the permissions to the NHibernate Linq IQueryable query.
-        /// </summary>
-        /// <param name="user">The user</param>
-        /// <param name="operation">The operation</param>
-        /// <param name="query">The NHibernate Linq IQueryable</param>
-        /// <typeparam name="T">The type of the IQueryable</typeparam>
-        /// <returns>Queryable with permissions added</returns>
-        IQueryable<T> AddPermissionsToQuery_Mine<T>(IUser user, string operation, IQueryable<T> query);
-
-        /// <summary>
-        ///     Adds the permissions to the NHibernate Linq IQueryable query for the given usergorup
-        /// </summary>
-        /// <param name="usersgroup">The usergroup</param>
-        /// <param name="operation">The operation</param>
-        /// <param name="query">The NHibernate Linq IQueryable</param>
-        /// <typeparam name="T">The type of the IQueryable</typeparam>
-        /// <returns>Queryable with permissions added</returns>
-        IQueryable<T> AddPermissionsToQuery_Mine<T>(UsersGroup usersgroup, string operation, IQueryable<T> query);
-
-		///<summary>
+        ///<summary>
 		///	Adds the permissions to the criteria query for the given usersgroup
         ///</summary>
         ///<param name="usersgroup">The usersgroup. Only permissions directly related to this usergroup
