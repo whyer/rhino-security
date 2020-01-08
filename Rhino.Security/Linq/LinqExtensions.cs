@@ -24,7 +24,7 @@ namespace Rhino.Security.Linq
             IUser user,
             string operation)
         {
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, operation, query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, operation, query);
             return queryWithPermissions;
         }
 
@@ -43,7 +43,7 @@ namespace Rhino.Security.Linq
             UsersGroup usersGroup,
             string operation)
         {
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersGroup, operation, query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersGroup, operation, query);
             return queryWithPermissions;
         }
     }

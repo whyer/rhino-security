@@ -373,7 +373,7 @@ namespace Rhino.Security.Services
 		}
 
         /// <inheritdoc />
-        public IQueryable<T> AddPermissionsToQuery<T>(IUser user, string operation, IQueryable<T> query)
+        public IQueryable<T> AddPermissionsToQuery_Mine<T>(IUser user, string operation, IQueryable<T> query)
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
 
@@ -407,7 +407,7 @@ namespace Rhino.Security.Services
 
 
         /// <inheritdoc />
-        public IQueryable<T> AddPermissionsToQuery<T>(UsersGroup usersgroup, string operation, IQueryable<T> query)
+        public IQueryable<T> AddPermissionsToQuery_Mine<T>(UsersGroup usersgroup, string operation, IQueryable<T> query)
         {
             string[] operationNames = Strings.GetHierarchicalOperationNames(operation);
 

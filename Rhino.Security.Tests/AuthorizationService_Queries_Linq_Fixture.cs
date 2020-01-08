@@ -18,7 +18,7 @@ namespace Rhino.Security.Tests
         [Fact]
         public void WillReturnNothingIfNoPermissionHasBeenDefined()
         {
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -26,14 +26,14 @@ namespace Rhino.Security.Tests
         public void WillReturnNothingForUsersGroupIfNoPermissionHasBeenDefined()
         {
             UsersGroup[] usersgroups = authorizationRepository.GetAssociatedUsersGroupFor(user);
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroups[0], "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroups[0], "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
         [Fact]
         public void WillReturnNothingIfOperationNotDefined()
         {
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Delete", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Delete", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -41,7 +41,7 @@ namespace Rhino.Security.Tests
         public void WillReturnNothingForUsersGroupIfOperationNotDefined()
         {
             UsersGroup[] usersgroups = authorizationRepository.GetAssociatedUsersGroupFor(user);
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroups[0], "/Account/Delete", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroups[0], "/Account/Delete", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -57,7 +57,7 @@ namespace Rhino.Security.Tests
 
             session.Flush(); 
             
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -72,7 +72,7 @@ namespace Rhino.Security.Tests
                 .DefaultLevel()
                 .Save();
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -86,7 +86,7 @@ namespace Rhino.Security.Tests
                 .DefaultLevel()
                 .Save();
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -101,7 +101,7 @@ namespace Rhino.Security.Tests
                 .DefaultLevel()
                 .Save();
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -121,7 +121,7 @@ namespace Rhino.Security.Tests
                 .DefaultLevel()
                 .Save();
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
 
         }
@@ -143,7 +143,7 @@ namespace Rhino.Security.Tests
                 .DefaultLevel()
                 .Save();
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
 
         }
@@ -165,7 +165,7 @@ namespace Rhino.Security.Tests
                 .Level(5)
                 .Save();
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -186,7 +186,7 @@ namespace Rhino.Security.Tests
                 .Level(5)
                 .Save();
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -206,7 +206,7 @@ namespace Rhino.Security.Tests
                 .Level(5)
                 .Save();
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -227,7 +227,7 @@ namespace Rhino.Security.Tests
                 .Level(5)
                 .Save();
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -242,7 +242,7 @@ namespace Rhino.Security.Tests
                 .Save();
 
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -258,7 +258,7 @@ namespace Rhino.Security.Tests
                 .Save();
 
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -272,7 +272,7 @@ namespace Rhino.Security.Tests
                 .DefaultLevel()
                 .Save();
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -288,7 +288,7 @@ namespace Rhino.Security.Tests
                 .Save();
 
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -303,7 +303,7 @@ namespace Rhino.Security.Tests
                 .Save();
 
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -319,7 +319,7 @@ namespace Rhino.Security.Tests
                 .Save();
             session.Flush();
 
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -335,7 +335,7 @@ namespace Rhino.Security.Tests
                 .Save();
 
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -351,7 +351,7 @@ namespace Rhino.Security.Tests
                 .Save();
             session.Flush();
 
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -366,7 +366,7 @@ namespace Rhino.Security.Tests
                 .Save();
             session.Flush();
 
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -381,7 +381,7 @@ namespace Rhino.Security.Tests
                 .Save();
             session.Flush();
 
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -396,7 +396,7 @@ namespace Rhino.Security.Tests
                 .Save();
             session.Flush();
 
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -412,7 +412,7 @@ namespace Rhino.Security.Tests
                 .Save();
             session.Flush();
 
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -427,7 +427,7 @@ namespace Rhino.Security.Tests
                 .Save();
             session.Flush();
 
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -443,7 +443,7 @@ namespace Rhino.Security.Tests
                 .Save();
 
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -458,7 +458,7 @@ namespace Rhino.Security.Tests
                 .Save();
 
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -474,7 +474,7 @@ namespace Rhino.Security.Tests
                 .Save();
 
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -492,7 +492,7 @@ namespace Rhino.Security.Tests
                .Save();
 
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -511,7 +511,7 @@ namespace Rhino.Security.Tests
                .Save();
 
             session.Flush();
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
@@ -533,7 +533,7 @@ namespace Rhino.Security.Tests
                .Save();
             session.Flush();
 
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(user, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(user, "/Account/Edit", query);
             Assert.NotEmpty(queryWithPermissions.ToList());
         }
 
@@ -551,7 +551,7 @@ namespace Rhino.Security.Tests
                .Save();
             session.Flush();
 
-            var queryWithPermissions = authorizationService.AddPermissionsToQuery(usersgroup, "/Account/Edit", query);
+            var queryWithPermissions = authorizationService.AddPermissionsToQuery_Mine(usersgroup, "/Account/Edit", query);
             Assert.Empty(queryWithPermissions.ToList());
         }
 
