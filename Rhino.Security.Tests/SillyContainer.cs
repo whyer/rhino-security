@@ -16,8 +16,7 @@ namespace Rhino.Security.Tests
         {
             if (serviceType == typeof(IAuthorizationService))
                 return new AuthorizationService(GetInstance<IPermissionsService>(),
-                                                GetInstance<IAuthorizationRepository>(),
-                                                SessionProvider());
+                    GetInstance<IAuthorizationRepository>());
             if (serviceType == typeof(IAuthorizationRepository))
                 return new AuthorizationRepository(SessionProvider());
             if (serviceType == typeof(IPermissionsBuilderService))

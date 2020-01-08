@@ -21,21 +21,17 @@ namespace Rhino.Security.Services
 	{
 		private readonly IAuthorizationRepository authorizationRepository;
 		private readonly IPermissionsService permissionsService;
-        private readonly ISession session;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AuthorizationService"/> class.
 		/// </summary>
 		/// <param name="permissionsService">The permissions service.</param>
 		/// <param name="authorizationRepository">The authorization editing service.</param>
-        /// <param name="session">The current session</param>
 		public AuthorizationService(IPermissionsService permissionsService,
-                                    IAuthorizationRepository authorizationRepository,
-                                    ISession session)
+                                    IAuthorizationRepository authorizationRepository)
 		{
 			this.permissionsService = permissionsService;
 			this.authorizationRepository = authorizationRepository;
-            this.session = session;
 		}
 
 		#region IAuthorizationService Members
