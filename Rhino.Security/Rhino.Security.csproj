@@ -39,7 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LinqKit.Core" Version="1.1.8" />
     <PackageReference Include="NHibernate" Version="5.2.0" />
     <PackageReference Include="CommonServiceLocator" Version="2.0.5" />
   </ItemGroup>

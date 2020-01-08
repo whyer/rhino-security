@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using LinqKit;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.SqlCommand;
