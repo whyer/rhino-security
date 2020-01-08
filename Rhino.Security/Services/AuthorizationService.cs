@@ -24,9 +24,6 @@ namespace Rhino.Security.Services
 		private readonly IPermissionsService permissionsService;
         private readonly ISession session;
 
-        private static readonly System.Reflection.PropertyInfo getQueryProviderSession =
-            typeof(DefaultQueryProvider).GetProperty("Session", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AuthorizationService"/> class.
 		/// </summary>
@@ -222,7 +219,7 @@ namespace Rhino.Security.Services
         {
             var nhQuery = (NhQueryable<TEntity>)query;
             var nhQueryProvider = (DefaultQueryProvider)nhQuery.Provider;
-            var session = (ISession)getQueryProviderSession.GetValue(nhQueryProvider, null);
+            var session = (ISession) nhQueryProvider.Session;
 
             var securityKeyProperty = Security.GetSecurityKeyProperty(typeof(TEntity));
 
@@ -262,7 +259,7 @@ namespace Rhino.Security.Services
         {
             var nhQuery = (NhQueryable<TEntity>)query;
             var nhQueryProvider = (DefaultQueryProvider)nhQuery.Provider;
-            var session = (ISession)getQueryProviderSession.GetValue(nhQueryProvider, null);
+            var session = (ISession)nhQueryProvider.Session;
 
             var securityKeyProperty = Security.GetSecurityKeyProperty(typeof(TEntity));
 
